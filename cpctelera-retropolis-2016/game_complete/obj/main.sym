@@ -1,0 +1,131 @@
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 1.
+Hexadecimal [16-Bits]
+
+Symbol Table
+
+    .__.$$$.                                                    =  2710 L
+    .__.ABS.                                                    =  0000 G
+    .__.CPU.                                                    =  0000 L
+    .__.H$L.                                                    =  0000 L
+  1 _EEstados                                                      0002 GR
+  1 _EEventos                                                      0001 GR
+  1 _EMirar                                                        0000 GR
+    _G_song                                                     =  0200 G
+  9 _ajustarAlSuelo                                                020F GR
+  9 _andando                                                       0517 GR
+  9 _andando_animar                                                04FE GR
+  9 _andando_entrar                                                04E1 GR
+  9 _andando_keys_1_139                                            0569 R
+  9 _anim_andar                                                    0046 GR
+  9 _anim_caer                                                     0058 GR
+  9 _anim_saltar                                                   0050 GR
+  9 _ascender                                                      041C GR
+  9 _asignarFrame                                                  008E GR
+  9 _aterrizando                                                   0346 GR
+  9 _aterrizando_entrar                                            0336 GR
+  9 _avanzarMapa                                                   023D GR
+  9 _borrarProta                                                   0159 GR
+  9 _cayendo                                                       038E GR
+  9 _cayendo_entrar                                                0357 GR
+  9 _cayendo_keys_1_118                                            03CF R
+  9 _compruebaTeclas                                               02F9 GR
+    _cpct_akp_musicInit                                            **** GX
+    _cpct_akp_musicPlay                                            **** GX
+    _cpct_disableFirmware                                          **** GX
+    _cpct_drawSprite                                               **** GX
+    _cpct_drawSpriteMaskedAlignedTable                             **** GX
+    _cpct_etm_drawTileBox2x4                                       **** GX
+    _cpct_etm_setTileset2x4                                        **** GX
+    _cpct_get2Bits                                                 **** GX
+    _cpct_getScreenPtr                                             **** GX
+    _cpct_hflipSpriteM0                                            **** GX
+    _cpct_isAnyKeyPressed                                          **** GX
+    _cpct_isKeyPressed                                             **** GX
+    _cpct_scanKeyboard_if                                          **** GX
+    _cpct_setInterruptHandler                                      **** GX
+    _cpct_setPALColour                                             **** GX
+    _cpct_setPalette                                               **** GX
+    _cpct_setVideoMode                                             **** GX
+    _cpct_waitVSYNC                                                **** GX
+  9 _descender                                                     0367 GR
+  9 _dibujarMapa                                                   0078 GR
+  9 _dibujarProta                                                  0130 GR
+  0 _dummy_cpct_transparentMaskTable0M0_container                  0000 GR
+  9 _ejecutarEstado                                                056F GR
+  9 _g_frames                                                      0016 GR
+    _g_hero_00                                                     **** GX
+    _g_hero_01                                                     **** GX
+    _g_hero_02                                                     **** GX
+    _g_hero_03                                                     **** GX
+    _g_hero_04                                                     **** GX
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 2.
+Hexadecimal [16-Bits]
+
+Symbol Table
+
+    _g_hero_05                                                     **** GX
+    _g_hero_06                                                     **** GX
+    _g_hero_07                                                     **** GX
+    _g_hero_08                                                     **** GX
+    _g_hero_09                                                     **** GX
+    _g_hero_10                                                     **** GX
+    _g_hero_11                                                     **** GX
+    _g_hero_12                                                     **** GX
+    _g_hero_13                                                     **** GX
+    _g_hero_14                                                     **** GX
+    _g_hero_15                                                     **** GX
+    _g_map1                                                        **** GX
+    _g_map2                                                        **** GX
+    _g_map3                                                        **** GX
+    _g_palette                                                     **** GX
+    _g_retropolis_0                                                **** GX
+    _g_retropolis_1                                                **** GX
+  9 _g_tablaSalto                                                  005C GR
+  8 _g_tablatrans                                                  0100 GR
+    _g_tileset                                                     **** GX
+  9 _girarFrame                                                    00B4 GR
+  9 _inicializar                                                   059D GR
+  9 _interrupcion                                                  0062 GR
+  1 _interrupcion_kk_1_78                                          0011 R
+  9 _main                                                          0628 GR
+  1 _mapa                                                          0003 GR
+  9 _mapas                                                         0010 GR
+  9 _moverDerecha                                                  02AA GR
+  9 _moverIzquierda                                                02D1 GR
+  1 _num_mapa                                                      0005 GR
+  9 _obtenerTilePtr                                                01CE GR
+  9 _playmusic                                                     0000 GR
+  9 _prepSalto                                                     04BB GR
+  9 _prepSalto_animar                                              04AF GR
+  9 _prepSalto_entrar                                              049F GR
+  9 _prepSalto_keys_1_133                                          04DF R
+  1 _prota                                                         0006 GR
+  9 _quieto                                                        03DE GR
+  9 _quieto_entrar                                                 03D3 GR
+  9 _quieto_keys_1_123                                             0416 R
+  9 _redibujarProta                                                02E5 GR
+  9 _retrocederMapa                                                0274 GR
+  9 _saltando                                                      045C GR
+  9 _saltando_entrar                                               044C GR
+  9 _saltando_keys_2_129                                           049B R
+  9 _seleccionarSpriteProta                                        00D6 GR
+  9 _sobreSuelo                                                    0218 GR
+
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 3.
+Hexadecimal [16-Bits]
+
+Area Table
+
+   0 _CODE                                      size    0   flags    0
+   1 _DATA                                      size   12   flags    0
+   2 _INITIALIZED                               size    0   flags    0
+   3 _DABS                                      size    0   flags    8
+   4 _HOME                                      size    0   flags    0
+   5 _GSINIT                                    size    0   flags    0
+   6 _GSFINAL                                   size    0   flags    0
+   7 _g_tablatrans_                             size    0   flags    8
+   8 _g_tablatrans_0                            size  100   flags    8
+   9 _CSEG                                      size  644   flags    0
+   A _INITIALIZER                               size    0   flags    0
+   B _CABS                                      size    0   flags    8
+
