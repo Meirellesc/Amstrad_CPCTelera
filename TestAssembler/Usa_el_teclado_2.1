@@ -1,0 +1,103 @@
+org #4000
+run #4000
+
+ld hl, #C000
+
+;;
+;;Dibujar coge
+;;
+dibuja_coge:
+;;primera
+ld (hl), %10001000
+ld  hl, #C001
+ld (hl), %00010001
+;;segunda
+ld  hl, #C800
+ld (hl), %11111000
+ld  hl, #C801
+ld (hl), %11110001
+;;tercera
+ld  hl, #D000
+ld (hl), %11111110
+ld  hl, #D001
+ld (hl), %11110111
+;;quarta
+ld  hl, #D800
+ld (hl), %11111111
+ld  hl, #D801
+ld (hl), %11111111
+;;quinta
+ld  hl, #E000
+ld (hl), %10111011
+ld  hl, #E001
+ld (hl), %11011101
+;;sexta
+ld  hl, #E800
+ld (hl), %00010101
+ld  hl, #E801
+ld (hl), %10001010
+;;septima
+ld  hl, #F000
+ld (hl), %00001110
+ld  hl, #F001
+ld (hl), %00000111
+;;octava
+ld  hl, #F800
+ld (hl), %00000100
+ld  hl, #F801
+ld (hl), %00000010
+
+;;
+;;Dibujar piso 
+;;
+dibuja_piso:
+ld  hl, #C050
+ld (hl), %00001010
+ld  hl, #C051
+ ld (hl), %00001010
+
+
+;;
+;;Borrar coge
+;;
+;;primera
+ld (hl), #00
+ld  hl, #C001
+ld (hl), #00
+;;segunda
+ld  hl, #C800
+ld (hl), #00
+ld  hl, #C801
+ld (hl), #00
+;;tercera
+ld  hl, #D000
+ld (hl), #00
+ld  hl, #D001
+ld (hl), #00
+;;quarta
+ld  hl, #D800
+ld (hl), #00
+ld  hl, #D801
+ld (hl), #00
+;;quinta
+ld  hl, #E000
+ld (hl), #00
+ld  hl, #E001
+ld (hl), #00
+;;sexta
+ld  hl, #E800
+ld (hl), #00
+ld  hl, #E801
+ld (hl), #00
+;;septima
+ld  hl, #F000
+ld (hl), #00
+ld  hl, #F001
+ld (hl), #00
+;;octava
+ld  hl, #F800
+ld (hl), #00
+ld  hl, #F801
+ld (hl), #00
+
+jr $
