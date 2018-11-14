@@ -1,0 +1,32 @@
+; fake SNA header
+ db "MV - SNA"
+ ds 8
+ db 2
+ ds 15+3
+ dw 5;PC!
+ db 1
+ ds 9
+ db "@@@@@@@@@@@@@@@@@"
+ db 14,0,0
+ db 63,40,46,$8E,38,0,25,30,0,7,0,0,$30,0
+ ds 8
+ db $82
+ ds 6+11
+ dw 48,2
+ ds 1+$90
+
+; fake Z80 INT's
+ ld bc,$7F89
+ out (c),c
+ ld hl,($010A) ; AMSDOS header JUMP!
+ jp (hl)
+ ds $138-$
+ jp $3B
+ ret
+
+; HEADER+BASIC
+ ds $0170+$100-$80-$
+ include "basketcs.tmp"
+
+; 48k padding
+; ds $C100-$

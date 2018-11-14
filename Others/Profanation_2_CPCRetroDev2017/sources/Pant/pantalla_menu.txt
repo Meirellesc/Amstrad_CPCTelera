@@ -1,0 +1,13 @@
+DB stile_05
+DB 16,80
+DB 48,80
+DB 192,96
+DB 200,#80 or 112
+DB stile_17
+DB 32,80
+DB 64,80
+DB 184,96
+DB 8,96
+DB 216,#80 or 112
+DB stile_12
+DB 16,#80 or 96

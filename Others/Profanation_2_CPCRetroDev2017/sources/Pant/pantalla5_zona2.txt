@@ -1,0 +1,119 @@
+DB stile_05
+DB 104,80
+DB 128,80
+DB 24,#80 or 96
+DB stile_07
+DB 72,16
+DB 136,32
+DB 216,32
+DB 232,#80 or 48
+DB stile_08
+DB 176,16
+DB 176,#80 or 32
+DB stile_11
+DB 240,#80 or 96
+DB stile_12
+DB 224,16
+DB 56,32
+DB 64,48
+DB 128,#80 or 64
+DB stile_13
+DB 168,#80 or 64
+DB #80 or stile_13
+DB 192,#80 or 64
+DB stile_17
+DB 240,32
+DB 120,80
+DB 144,80
+DB 40,#80 or 96
+DB stile_29
+DB 144,24
+DB 136,56
+DB 240,#80 or 88
+DB stile_36
+DB 168,48
+DB 160,#80 or 56
+DB stile_38
+DB 48,#80 or 0
+DB stile_40
+DB 0,#80 or 48
+DB stile_45
+DB 0,#80 or 64
+DB stile_46
+DB 56,112
+DB 112,#80 or 112
+DB stile_48
+DB 48,112
+DB 104,#80 or 112
+DB stile_49
+DB 0,32
+DB 224,#80 or 112
+DB stile_52
+DB 168,#80 or 112
+DB stile_53
+DB 0,16
+DB 0,#80 or 112
+DB stile_54
+DB 0,80
+DB 8,#80 or 80
+DB stile_55
+DB 248,96
+DB 200,112
+DB 240,#80 or 112
+DB #80 or stile_57
+DB 16,#80 or 24
+DB stile_57
+DB 128,8
+DB 48,16
+DB 48,#80 or 48
+DB #80 or stile_58
+DB 16,#80 or 96
+DB stile_59
+DB 248,80
+DB 104,#80 or 96
+DB stile_23
+DB 112,#80 or 104
+DB stile_60
+DB 0,0
+DB 0,96
+DB 184,112
+DB 176,#80 or 112
+DB stile_61
+DB 48,8
+DB 64,8
+DB 88,8
+DB 104,8
+DB 120,8
+DB 144,8
+DB 160,8
+DB 208,8
+DB 224,#80 or 8
+DB stile_63
+DB 96,0
+DB 136,0
+DB 184,0
+DB 80,0
+DB 120,0
+DB 160,0
+DB 168,0
+DB 208,0
+DB 216,0
+DB 240,#80 or 0
+DB stile_66
+DB 0,120
+DB 40,120
+DB 104,120
+DB 128,120
+DB 168,120
+DB 200,120
+DB 240,#80 or 120
+DB stile_67
+DB 80,#80 or 120
+DB stile_68
+DB 80,48
+DB 80,72
+DB 80,64
+DB 80,88
+DB 80,#80 or 104
+DB stile_69
+DB 80,#80 or 32

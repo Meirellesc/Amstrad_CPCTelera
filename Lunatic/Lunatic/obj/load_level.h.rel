@@ -1,0 +1,15 @@
+XL2
+H 1 areas C global symbols
+S hero_x Ref0000
+S hero_y Ref0000
+S load_level0 Ref0000
+S load_level1 Ref0000
+S load_level2 Ref0000
+S load_level3 Ref0000
+S load_level8 Ref0000
+S load_level9 Ref0000
+S .__.ABS. Def0000
+S n_enem Ref0000
+S load_level10 Ref0000
+S n_plat Ref0000
+A _CODE size 0 flags 0 addr 0

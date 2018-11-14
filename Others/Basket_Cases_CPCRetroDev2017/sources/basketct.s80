@@ -1,0 +1,142 @@
+; ========================================================================
+
+load = $0170
+type = 0;2;
+exec = boot
+
+; AMSDOS HEADER
+ org load-$80
+ ds $12
+ db type
+ dw 0,load
+ ds 1
+ dw last-load,exec
+ ds $24
+ dw last-load
+ ds 1
+ dw type+(lo load)+(hi load)+2*(lo(last-load))+2*(hi(last-load))+(lo exec)+(hi exec)
+ ds $3B
+
+; BASIC HEADER
+ dw boot-$-2,47195,$1A83,boot,$C001
+text db "BASKET CASES title!"
+text_ ds 3
+
+; ========================================================================
+
+boot ;
+
+ xor a
+ call crtcvlen
+
+ ld hl,softink1
+ xor a
+ ld b,16;4;
+softinks ld c,(hl)
+ push hl
+ push af
+ push bc
+ ld b,c
+ call $BC32 ; SCR SET INK
+ pop bc
+ pop af
+ pop hl
+ inc hl
+ inc a
+ djnz softinks
+ ld c,b
+ call $BC38 ; SCR SET BORDER
+ xor a;ld a,1;
+ call $BC0E ; SCR SET MODE
+
+ ld hl,screen_-1
+ call upak0
+ ex de,hl
+ inc hl
+ ld de,$C000
+ ld a,200
+ldscreen ld bc,80
+ ldir
+ ex de,hl
+ ld bc,$800-80
+ add hl,bc
+ jr nc,$+6
+ ld bc,80-$4000
+ add hl,bc
+ ex de,hl
+ dec a
+ jr nz,ldscreen
+
+ ld a,25
+ ;call crtcvlen
+
+ ld hl,reloc
+ ld de,$BE80
+ ld bc,reloc_-reloc
+ push de
+ ldir
+ ;ret
+crtcvlen ;
+ ld bc,$BC06
+ out (c),c
+ inc b
+ out (c),a
+ ret
+
+; ------------------------------------------------------------------------
+
+reloc ;
+
+ call $BC7D
+ ld hl,filename-reloc+$BE80
+ ld de,$0040
+ ld b,filename_-filename
+ call $BC77
+ jr nc,$-14
+ ld hl,$0040
+ push hl
+ add hl,bc
+ dec hl
+ ex hl,(sp)
+ call $BC83
+ call $BC7A
+ pop hl
+ call upak0-reloc+$BE80
+ ex de,hl
+ inc hl
+ ld de,$0170
+ ld bc,$A700-$0170
+ ldir
+ ld hl,$0170+4
+ ld a,(hl)
+ inc hl
+ cp $83 ; "CALL"
+ jr nz,$-4
+ inc hl
+ ld a,(hl)
+ inc hl
+ ld h,(hl)
+ ld l,a
+ jp (hl)
+
+upak0 ld de,$A700-1
+_lzssseflag = 1+2+4+16
+ include "_lzssse.i80"
+
+filename db "BASKETCS.BIN"
+filename_ ;
+
+reloc_ ;
+
+; ------------------------------------------------------------------------
+
+softink1 db "@CDIFGLMOPQVWXYZ"
+
+screen ;
+ include "BASKETCT.INC"
+screen_ ;
+
+last
+ end
+
+; ========================================================================

@@ -1,0 +1,205 @@
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 1.
+Hexadecimal [16-Bits]
+
+
+
+                              1 .include "main.h.s"
+                              1 ;; 
+                              2 ;; Declare all function entry points as global symbols for the compiler.
+                              3 ;; (The linker will know what to do with them)
+                              4 ;; WARNING: Every global symbol declared will be linked, so DO NOT declare 
+                              5 ;; symbols for functions you do not use.
+                              6 ;;
+                              7 .globl cpct_disableFirmware_asm
+                              8 .globl cpct_drawSolidBox_asm
+                              9 .globl cpct_getScreenPtr_asm
+                             10 .globl cpct_waitVSYNC_asm
+                             11 .globl cpct_scanKeyboard_asm
+                             12 .globl cpct_isKeyPressed_asm
+                             13 .globl cpct_setVideoMode_asm
+                             14 .globl cpct_drawSprite_asm
+                             15 .globl cpct_setPalette_asm
+                             16 .globl cpct_setPALColour_asm
+                             17 .globl cpct_drawSpriteMasked_asm 
+                             18 .globl cpct_drawStringM0_asm
+                             19 .globl cpct_setDrawCharM0_asm 
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 2.
+Hexadecimal [16-Bits]
+
+
+
+                              2 .include "numbers.h.s"
+                              1 .globl draw_numbers
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 3.
+Hexadecimal [16-Bits]
+
+
+
+                              3 .include "disparo.h.s"
+                              1 .macro DefineDisparo _name, _x, _y, _vx, _vy, _w, _h, _sprite
+                              2 _name:
+                              3    .db   _x, _y       ;;X, Y
+                              4    .db	 _vx, _vy	  ;;vX, vY
+                              5    .db	 _w, _h		  ;;W, H
+                              6    .dw	 _sprite		  ;;Color
+                              7 
+                              8 .endm
+                              9 
+                             10 
+                     0000    11 s_x = 0
+                     0001    12 s_y = 1
+                     0002    13 s_vx = 2
+                     0003    14 s_vy = 3
+                     0004    15 s_w = 4
+                     0005    16 s_h = 5
+                     0006    17 s_sp_l = 6
+                     0007    18 s_sp_h = 7
+                             19 
+                             20 .globl shotControl
+                             21 .globl startShot
+                             22 .globl shot_data
+                             23 .globl hero_shot
+                             24 
+                             25 .globl shot_direction
+                             26 .globl munition
+                             27 .globl s_background
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 4.
+Hexadecimal [16-Bits]
+
+
+
+                              4 
+   0000 03                    5 thenumber: 	.db 	#3
+   0001 00                    6 thenumber_l: 	.db 	#0
+   0002 00                    7 thenumber_h: 	.db 	#0
+                              8 
+   0003                       9 selectNumber:
+                             10 
+   0003 32 00 00      [13]   11 ld 	(thenumber), 	a
+   0006 FE 00         [ 7]   12 cp #0
+   0008 C2 17 00      [10]   13 jp 	nz, 	nocero
+   000B 21 00 00      [10]   14 ld 	hl, 	#_numbers_sp_00
+   000E 7D            [ 4]   15 ld 	a,	l 	
+   000F 32 01 00      [13]   16 ld 	(thenumber_l),	a 	
+   0012 7C            [ 4]   17 ld  a, 	h
+   0013 32 02 00      [13]   18 ld  (thenumber_h), 	a
+   0016 C9            [10]   19 ret
+   0017                      20 nocero:
+   0017 3A 00 00      [13]   21 ld 	a, 	(thenumber)
+   001A FE 01         [ 7]   22 cp #1
+   001C C2 2B 00      [10]   23 jp 	nz, 	nouno
+   001F 21 00 00      [10]   24 ld 	hl, 	#_numbers_sp_01
+   0022 7D            [ 4]   25 ld 	a,	l 	
+   0023 32 01 00      [13]   26 ld 	(thenumber_l),	a 	
+   0026 7C            [ 4]   27 ld  a, 	h
+   0027 32 02 00      [13]   28 ld  (thenumber_h), 	a
+   002A C9            [10]   29 ret
+   002B                      30 nouno:
+   002B 3A 00 00      [13]   31 ld 	a, 	(thenumber)
+   002E FE 02         [ 7]   32 cp #2
+   0030 C2 3F 00      [10]   33 jp 	nz, 	nodos
+   0033 21 00 00      [10]   34 ld 	hl, 	#_numbers_sp_02
+   0036 7D            [ 4]   35 ld 	a,	l 	
+   0037 32 01 00      [13]   36 ld 	(thenumber_l),	a 	
+   003A 7C            [ 4]   37 ld  a, 	h
+   003B 32 02 00      [13]   38 ld  (thenumber_h), 	a
+   003E C9            [10]   39 ret
+   003F                      40 nodos:
+   003F 3A 00 00      [13]   41 ld 	a, 	(thenumber)
+   0042 FE 03         [ 7]   42 cp #3
+   0044 C2 53 00      [10]   43 jp 	nz, 	notres
+   0047 21 00 00      [10]   44 ld 	hl, 	#_numbers_sp_03
+   004A 7D            [ 4]   45 ld 	a,	l 	
+   004B 32 01 00      [13]   46 ld 	(thenumber_l),	a 	
+   004E 7C            [ 4]   47 ld  a, 	h
+   004F 32 02 00      [13]   48 ld  (thenumber_h), 	a
+   0052 C9            [10]   49 ret
+   0053                      50 notres:
+   0053 3A 00 00      [13]   51 ld 	a, 	(thenumber)
+   0056 FE 04         [ 7]   52 cp #4
+   0058 C2 67 00      [10]   53 jp 	nz, 	nocuatro
+   005B 21 00 00      [10]   54 ld 	hl, 	#_numbers_sp_04
+   005E 7D            [ 4]   55 ld 	a,	l 	
+   005F 32 01 00      [13]   56 ld 	(thenumber_l),	a 	
+   0062 7C            [ 4]   57 ld  a, 	h
+   0063 32 02 00      [13]   58 ld  (thenumber_h), 	a
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 5.
+Hexadecimal [16-Bits]
+
+
+
+   0066 C9            [10]   59 ret
+   0067                      60 nocuatro:
+   0067 3A 00 00      [13]   61 ld 	a, 	(thenumber)
+   006A FE 05         [ 7]   62 cp #5
+   006C C2 7B 00      [10]   63 jp 	nz, 	nocinco
+   006F 21 00 00      [10]   64 ld 	hl, 	#_numbers_sp_05
+   0072 7D            [ 4]   65 ld 	a,	l 	
+   0073 32 01 00      [13]   66 ld 	(thenumber_l),	a 	
+   0076 7C            [ 4]   67 ld  a, 	h
+   0077 32 02 00      [13]   68 ld  (thenumber_h), 	a
+   007A C9            [10]   69 ret
+   007B                      70 nocinco:
+   007B 3A 00 00      [13]   71 ld 	a, 	(thenumber)
+   007E FE 06         [ 7]   72 cp #6
+   0080 C2 8F 00      [10]   73 jp 	nz, 	noseis
+   0083 21 00 00      [10]   74 ld 	hl, 	#_numbers_sp_06
+   0086 7D            [ 4]   75 ld 	a,	l 	
+   0087 32 01 00      [13]   76 ld 	(thenumber_l),	a 	
+   008A 7C            [ 4]   77 ld  a, 	h
+   008B 32 02 00      [13]   78 ld  (thenumber_h), 	a
+   008E C9            [10]   79 ret
+   008F                      80 noseis:
+   008F 3A 00 00      [13]   81 ld 	a, 	(thenumber)
+   0092 FE 07         [ 7]   82 cp #7
+   0094 C2 A3 00      [10]   83 jp 	nz, 	nosiete
+   0097 21 00 00      [10]   84 ld 	hl, 	#_numbers_sp_07
+   009A 7D            [ 4]   85 ld 	a,	l 	
+   009B 32 01 00      [13]   86 ld 	(thenumber_l),	a 	
+   009E 7C            [ 4]   87 ld  a, 	h
+   009F 32 02 00      [13]   88 ld  (thenumber_h), 	a
+   00A2 C9            [10]   89 ret
+   00A3                      90 nosiete:
+   00A3 3A 00 00      [13]   91 ld 	a, 	(thenumber)
+   00A6 FE 08         [ 7]   92 cp #8
+   00A8 C2 B7 00      [10]   93 jp 	nz, 	noocho
+   00AB 21 00 00      [10]   94 ld 	hl, 	#_numbers_sp_08
+   00AE 7D            [ 4]   95 ld 	a,	l 	
+   00AF 32 01 00      [13]   96 ld 	(thenumber_l),	a 	
+   00B2 7C            [ 4]   97 ld  a, 	h
+   00B3 32 02 00      [13]   98 ld  (thenumber_h), 	a
+   00B6 C9            [10]   99 ret
+   00B7                     100 noocho:
+   00B7 21 00 00      [10]  101 ld 	hl, 	#_numbers_sp_09
+   00BA 7D            [ 4]  102 ld 	a,	l 	
+   00BB 32 01 00      [13]  103 ld 	(thenumber_l),	a 	
+   00BE 7C            [ 4]  104 ld  a, 	h
+   00BF 32 02 00      [13]  105 ld  (thenumber_h), 	a
+                            106 
+   00C2 C9            [10]  107 ret
+                            108 
+   00C3                     109 draw_numbers:
+                            110 
+   00C3 CD 03 00      [17]  111 	call selectNumber
+   00C6 11 00 C0      [10]  112 	ld    de, #0xC000         ;; Comienzo de memoria de video
+   00C9 0E 4B         [ 7]  113 	ld    c, 	#75          ;; Entidad X
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 6.
+Hexadecimal [16-Bits]
+
+
+
+   00CB 06 04         [ 7]  114 	ld    b, 	#4          ;; Entidad Y
+   00CD CD 00 00      [17]  115 	call  cpct_getScreenPtr_asm  ;; Posicionar en pantalla
+                            116 
+                            117 	;;;HL -> Memoria de video
+                            118 
+   00D0 EB            [ 4]  119 	ex    de, hl         ;; Cambio lo de HL a DE
+   00D1 3A 01 00      [13]  120 	ld    a, (thenumber_l)
+   00D4 6F            [ 4]  121 	ld    l, a
+   00D5 3A 02 00      [13]  122 	ld    a, (thenumber_h)
+   00D8 67            [ 4]  123 	ld    h, a
+                            124 	;;;ld    hl, #_hero_sp_0  
+   00D9 0E 08         [ 7]  125 	ld    c, #8     ;; Alto
+   00DB 06 04         [ 7]  126 	ld    b, #4     ;; Ancho
+   00DD CD 00 00      [17]  127    call cpct_drawSpriteBlended_asm
+   00E0 C9            [10]  128 ret

@@ -1,0 +1,1079 @@
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 1.
+Hexadecimal [16-Bits]
+
+
+
+                              1 ;|0x00	0
+                              2 ;|0x04	1
+                              3 ;|0x08 	2
+                              4 ;|0x0C 	3
+                              5 ;|0x10 	4
+                              6 ;|0x14
+                              7 ;|0x18
+                              8 ;|0x1C
+                              9 ;|0x20
+                             10 ;|0x24
+                             11 ;|0x28 	10
+                             12 ;|0x2C
+                             13 ;|0x30
+                             14 ;|0x34
+                             15 ;|0x38
+                             16 ;|0x3C 	15
+                             17 ;|0x40
+                             18 ;|0x44
+                             19 ;|0x48
+                             20 ;|0x4C
+                             21 ;|0x50 	20
+                             22 ;|0x54
+                             23 ;|0x58
+                             24 ;|0x5C
+                             25 ;|0x60 
+                             26 ;|0x64 	25
+                             27 ;|0x68
+                             28 ;|0x6C
+                             29 ;|0x70
+                             30 ;|0x74
+                             31 ;|0x78 	30
+                             32 ;|0x7C
+                             33 ;|0x80
+                             34 ;|0x84
+                             35 ;|0x88
+                             36 ;|0x8C 	35
+                             37 ;|0x90
+                             38 ;|0x94
+                             39 ;|0x98
+                             40 ;|0x9C
+                             41 ;|0xA0 	40
+                             42 ;|0xA4
+                             43 ;|0xA8
+                             44 ;|0xAC
+                             45 ;|0xB0
+                             46 ;|0xB4 	46
+                             47 ;|0xB8
+                             48 ;|0xBC
+                             49 ;|0xC0
+                             50 ;|0xC4
+                             51 ;|0xC8 	50
+                             52 
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 2.
+Hexadecimal [16-Bits]
+
+
+
+                             53 .include "load_level.h.s"
+                              1 .globl load_level1
+                              2 .globl load_level2
+                              3 .globl load_level3
+                              4 .globl load_level8
+                              5 .globl load_level9
+                              6 .globl load_level10
+                              7 
+                              8 .globl n_plat
+                              9 .globl n_enem
+                             10 .globl hero_x
+                             11 .globl hero_y
+                             12 
+                             13 .globl load_level0
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 3.
+Hexadecimal [16-Bits]
+
+
+
+                             54 .include "platform.h.s"
+                              1 .macro DefinePlatform _name, _x, _y, _vx, _vy, _w, _h
+                              2 _name:
+                              3    .db   _x, _y       ;;X, Y
+                              4    .db	 _vx, _vy		  ;;W, H
+                              5    .db	 _w, _h		  ;;W, H
+                              6 
+                              7 .endm
+                              8 
+                              9 
+                             10 
+                     0000    11 p_x = 0
+                     0001    12 p_y = 1
+                     0002    13 p_vx = 2
+                     0003    14 p_vy = 3
+                     0004    15 p_w = 4
+                     0005    16 p_h = 5
+                             17 
+                             18 
+                             19 
+                             20 .globl platform_datas 
+                             21 .globl platform_data 
+                             22 .globl platform_data2 
+                             23 .globl platform_data3
+                             24 .globl platform_data4
+                             25 .globl platform_data5
+                             26 .globl platform_data6
+                             27 .globl platform_data7
+                             28 .globl platform_data8
+                             29 .globl platform_data9
+                             30 .globl platform_data10
+                             31 .globl platform_data11
+                             32 
+                             33 .globl plat_checkAll
+                             34 .globl ent_fall
+                             35 .globl plat_checkAll_border
+                             36 .globl k_plat_size
+                             37 .globl check_platform_enemy
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 4.
+Hexadecimal [16-Bits]
+
+
+
+                             55 .include "objects.h.s"
+                              1 .macro DefineObjects _name, _x, _y, _w, _h, _sprite, _tipo, _open
+                              2 _name:
+                              3    .db   _x, _y       ;;X, Y
+                              4    .db   _w, _h       ;;W, H
+                              5    .dw   _sprite      ;;Puntero al sprite
+                              6    .db   _tipo        ;;Enemy life
+                              7    .db 	 _open
+                              8    _name'_size = . - _name
+                              9 .endm
+                             10 
+                     0000    11 obj_x 		= 0
+                     0001    12 obj_y 		= 1
+                     0002    13 obj_w 		= 2
+                     0003    14 obj_h 		= 3
+                     0004    15 obj_sp_l 	= 4
+                     0005    16 obj_sp_h 	= 5
+                     0006    17 obj_tipo 	= 6
+                     0007    18 obj_open 	= 7
+                             19 
+                             20 .globl 	main_obj
+                             21 .globl 	draw_obj
+                             22 .globl 	bala
+                             23 .globl 	puerta
+                             24 .globl 	llave
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 5.
+Hexadecimal [16-Bits]
+
+
+
+                             56 .include "enemy.h.s"
+                              1 .macro DefineEnemy _name, _x, _y, _vx, _vy, _w, _h, _sprite, _life, _slow, _slowReference, _canMove, _tipo
+                              2 _name:
+                              3    .db   _x, _y       ;;X, Y
+                              4    .db   _vx, _vy     ;;VX, VY
+                              5    .db   _w, _h       ;;W, H
+                              6    .dw   _sprite      ;;Puntero al sprite
+                              7    .db   _life        ;;Enemy life
+                              8    .db   _slow        ;;enemy slow
+                              9    .db   _slowReference        ;;enemy slow
+                             10    .db 	 _canMove
+                             11    .db   _tipo
+                             12    _name'_size = . - _name
+                             13 .endm
+                             14 
+                     0000    15 en_x = 0
+                     0001    16 en_y = 1
+                     0002    17 en_vx = 2
+                     0003    18 en_vy = 3
+                     0004    19 en_w = 4
+                     0005    20 en_h = 5
+                     0006    21 en_sp_l = 6
+                     0007    22 en_sp_h = 7
+                     0008    23 en_life = 8
+                     0009    24 en_slow = 9
+                     000A    25 en_slowReference = 10
+                     000B    26 en_canMove = 11
+                     000C    27 en_tipo = 12
+                             28 
+                             29 
+                             30 .globl enemy_interaction
+                             31 .globl enemy_vector 
+                             32 .globl k_enemy_size 
+                             33 
+                             34 .globl enemy_data0
+                             35 .globl enemy_data1
+                             36 .globl enemy_data2
+                             37 .globl enemy_data3
+                             38 .globl enemy_data4
+                             39 .globl init_enemy
+                             40 
+                             41 .globl pos_y_en
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 6.
+Hexadecimal [16-Bits]
+
+
+
+                             57 .include "entity.h.s"
+                              1 .macro DefineEntity _name, _x, _y, _vx, _vy, _w, _h, _sprite, _upd, _life 
+                              2 _name:
+                              3    .db   _x, _y       ;;X, Y
+                              4    .db   _vx, _vy     ;;VX, VY
+                              5    .db   _w, _h       ;;W, H
+                              6    .dw   _sprite      ;;Puntero al sprite
+                              7    .dw   _upd         ;;Update 
+                              8    .db   _life        ;;Life
+                              9    _name'_size = . - _name
+                             10 .endm
+                             11 
+                             12 ;;.macro DefineEntityDefault _name, _suf
+                             13 ;;   DefineEntity _name'_suf, 0xAA, 0, 0, 0, 0, 0, 0, 0xFFFF, 
+                             14 ;;.endm
+                             15 
+                             16 ;;.macro DefineNEntities _name, _n
+                             17 ;;   _c = 0
+                             18 ;;   .rept _n
+                             19 ;;      DefineEntityDefault _name, \_c
+                             20 ;;      _c = _c + 1
+                             21 ;;   .endm
+                             22 ;;.endm
+                             23 
+                     0000    24 e_x      = 0
+                     0001    25 e_y      = 1
+                     0002    26 e_vx     = 2
+                     0003    27 e_vy     = 3
+                     0004    28 e_w      = 4
+                     0005    29 e_h      = 5
+                     0006    30 e_sp_l   = 6
+                     0007    31 e_sp_h	 = 7
+                     0008    32 e_upd_l  = 8
+                     0009    33 e_upd_h  = 9
+                     000A    34 e_life   = 10
+                             35 
+                             36 
+                             37 .globl ent_update
+                             38 .globl ent_draw
+                             39 .globl update_draw_life
+                             40 
+                             41 
+                             42 .globl hero_data
+                             43 .globl jumpControl
+                             44 .globl ent_isJumping_or_canFall
+                             45 .globl hero_fall
+                             46 .globl hero_dispara
+                             47 .globl hero_jump
+                             48 
+                             49 
+                             50 .globl	ent_background
+                             51 .globl 	pos_y
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 7.
+Hexadecimal [16-Bits]
+
+
+
+                             58 .include "main.h.s"
+                              1 ;; 
+                              2 ;; Declare all function entry points as global symbols for the compiler.
+                              3 ;; (The linker will know what to do with them)
+                              4 ;; WARNING: Every global symbol declared will be linked, so DO NOT declare 
+                              5 ;; symbols for functions you do not use.
+                              6 ;;
+                              7 .globl cpct_disableFirmware_asm
+                              8 .globl cpct_drawSolidBox_asm
+                              9 .globl cpct_getScreenPtr_asm
+                             10 .globl cpct_waitVSYNC_asm
+                             11 .globl cpct_scanKeyboard_asm
+                             12 .globl cpct_isKeyPressed_asm
+                             13 .globl cpct_setVideoMode_asm
+                             14 .globl cpct_drawSprite_asm
+                             15 .globl cpct_setPalette_asm
+                             16 .globl cpct_setPALColour_asm
+                             17 .globl cpct_drawSpriteMasked_asm 
+                             18 .globl cpct_drawStringM0_asm
+                             19 .globl cpct_setDrawCharM0_asm 
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 8.
+Hexadecimal [16-Bits]
+
+
+
+                             59 
+   0000 00                   60 n_plat: 	.db	#0
+   0001 00                   61 n_enem: 	.db	#0
+   0002 00                   62 hero_x:		.db #0
+   0003 00                   63 hero_y:		.db #0
+                             64 
+                             65 ;/////////////////////////////////////////////////////////////////
+                             66 ; 					LEVEL 			0
+                             67 ;/////////////////////////////////////////////////////////////////
+   0004                      68 load_level0:
+   0004 3E 06         [ 7]   69 ld 	a, 	#6
+   0006 32 00 00      [13]   70 ld 	(n_plat), 	a
+   0009 3E 00         [ 7]   71 ld 	a, 	#0
+   000B 32 01 00      [13]   72 ld 	(n_enem), 	a
+                             73 
+   000E DD 21 00 00   [14]   74 ld 	ix, #hero_data   	;; INICIALIZA HEROE
+   0012 3E 01         [ 7]   75 ld 	a, 	#0x01
+   0014 32 02 00      [13]   76 ld 	(hero_x), 	a
+   0017 DD 77 00      [19]   77 ld 	e_x(ix), 	a
+   001A 3E A8         [ 7]   78 ld 	a, 	#0xA8
+   001C 32 03 00      [13]   79 ld 	(hero_y), 	a
+   001F DD 77 01      [19]   80 ld 	e_y(ix), 	a
+                             81 
+   0022 DD 21 00 00   [14]   82 ld ix, 	#platform_datas	;;
+   0026 3E 00         [ 7]   83 ld 	a, 	#0x00
+   0028 06 B8         [ 7]   84 ld 	b, 	#0xB8
+   002A 0E 16         [ 7]   85 ld 	c, 	#0x16
+   002C 16 0C         [ 7]   86 ld 	d, 	#0x0C
+   002E CD 3C 05      [17]   87 call cargar_plataforma
+                             88 
+   0031 DD 21 00 00   [14]   89 ld ix, 	#platform_data
+   0035 3E 3E         [ 7]   90 ld 	a, 	#0x3E
+   0037 06 B8         [ 7]   91 ld 	b, 	#0xB8
+   0039 0E 12         [ 7]   92 ld 	c, 	#0x12
+   003B 16 0C         [ 7]   93 ld 	d, 	#0x0C
+   003D CD 3C 05      [17]   94 call cargar_plataforma
+                             95 
+   0040 DD 21 00 00   [14]   96 ld ix, 	#platform_data2
+   0044 3E 20         [ 7]   97 ld 	a, 	#0x20
+   0046 06 98         [ 7]   98 ld 	b, 	#0x98
+   0048 0E 1E         [ 7]   99 ld 	c, 	#0x1E
+   004A 16 0C         [ 7]  100 ld 	d, 	#0x0C
+   004C CD 3C 05      [17]  101 call cargar_plataforma
+                            102 
+   004F DD 21 00 00   [14]  103 ld ix, 	#platform_data3
+   0053 3E 00         [ 7]  104 ld 	a, 	#0x00
+   0055 06 78         [ 7]  105 ld 	b, 	#0x78
+   0057 0E 16         [ 7]  106 ld 	c, 	#0x16
+   0059 16 0C         [ 7]  107 ld 	d, 	#0x0C
+   005B CD 3C 05      [17]  108 call cargar_plataforma
+                            109 
+   005E DD 21 00 00   [14]  110 ld ix, 	#platform_data4
+   0062 3E 20         [ 7]  111 ld 	a, 	#0x20
+   0064 06 58         [ 7]  112 ld 	b, 	#0x58
+   0066 0E 16         [ 7]  113 ld 	c, 	#0x16
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 9.
+Hexadecimal [16-Bits]
+
+
+
+   0068 16 0C         [ 7]  114 ld 	d, 	#0x0C
+   006A CD 3C 05      [17]  115 call cargar_plataforma
+                            116 
+   006D DD 21 00 00   [14]  117 ld ix, 	#platform_data5
+   0071 3E 3E         [ 7]  118 ld 	a, 	#0x3E
+   0073 06 38         [ 7]  119 ld 	b, 	#0x38
+   0075 0E 12         [ 7]  120 ld 	c, 	#0x12
+   0077 16 0C         [ 7]  121 ld 	d, 	#0x0C
+   0079 CD 3C 05      [17]  122 call cargar_plataforma
+                            123 
+   007C DD 21 00 00   [14]  124 ld ix, 	#platform_data6
+   0080 3E 3E         [ 7]  125 ld 	a, 	#62
+   0082 06 38         [ 7]  126 ld 	b, 	#56
+   0084 0E 12         [ 7]  127 ld 	c, 	#18
+   0086 16 0C         [ 7]  128 ld 	d, 	#12
+   0088 CD 3C 05      [17]  129 call cargar_plataforma
+                            130 
+                            131 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                            132 ; OBJETOS
+                            133 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                            134 ; OBJETOS
+   008B DD 21 00 00   [14]  135 ld ix, 	#llave
+   008F 3E 4A         [ 7]  136 ld 	a, 	#0x4A
+   0091 06 A8         [ 7]  137 ld 	b, 	#0xA8
+   0093 0E 01         [ 7]  138 ld 	c, 	#1
+   0095 CD 49 05      [17]  139 call cargar_objetos
+                            140 
+   0098 DD 21 00 00   [14]  141 ld ix, 	#puerta
+   009C 3E 48         [ 7]  142 ld 	a, 	#0x48
+   009E 06 28         [ 7]  143 ld 	b, 	#0x28
+   00A0 0E 00         [ 7]  144 ld 	c, 	#0
+   00A2 CD 49 05      [17]  145 call cargar_objetos
+                            146 
+   00A5 C9            [10]  147 ret
+                            148 
+                            149 ;/////////////////////////////////////////////////////////////////
+                            150 ; 					LEVEL 			1
+                            151 ;/////////////////////////////////////////////////////////////////
+   00A6                     152 load_level1:
+   00A6 3E 05         [ 7]  153 ld 	a, 	#5
+   00A8 32 00 00      [13]  154 ld 	(n_plat), 	a
+                            155 
+   00AB 3E 01         [ 7]  156 ld 	a, 	#1
+   00AD 32 01 00      [13]  157 ld 	(n_enem), 	a
+   00B0 3E 01         [ 7]  158 ld 	a, 	#1
+   00B2 32 00 00      [13]  159 ld 	(init_enemy), 	a
+                            160 
+   00B5 DD 21 00 00   [14]  161 ld 	ix, #hero_data   	;; INICIALIZA HEROE
+   00B9 3E 01         [ 7]  162 ld 	a, 	#0x01
+   00BB 32 02 00      [13]  163 ld 	(hero_x), 	a
+   00BE DD 77 00      [19]  164 ld 	e_x(ix), 	a
+   00C1 3E A8         [ 7]  165 ld 	a, 	#0xA8
+   00C3 32 03 00      [13]  166 ld 	(hero_y),	a
+   00C6 DD 77 01      [19]  167 ld 	e_y(ix), 	a
+                            168 
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 10.
+Hexadecimal [16-Bits]
+
+
+
+   00C9 DD 21 00 00   [14]  169 ld ix, 	#platform_datas
+   00CD 3E 00         [ 7]  170 ld 	a, 	#0x00
+   00CF 06 B8         [ 7]  171 ld 	b, 	#0xB8
+   00D1 0E 50         [ 7]  172 ld 	c, 	#0x50
+   00D3 16 0C         [ 7]  173 ld 	d, 	#0x0C
+   00D5 CD 3C 05      [17]  174 call cargar_plataforma
+                            175 
+   00D8 DD 21 00 00   [14]  176 ld ix, 	#platform_data
+   00DC 3E 32         [ 7]  177 ld 	a, 	#0x32
+   00DE 06 98         [ 7]  178 ld 	b, 	#0x98
+   00E0 0E 1E         [ 7]  179 ld 	c, 	#0x1E
+   00E2 16 0C         [ 7]  180 ld 	d, 	#0x0C
+   00E4 CD 3C 05      [17]  181 call cargar_plataforma
+                            182 
+   00E7 DD 21 00 00   [14]  183 ld ix, 	#platform_data2
+   00EB 3E 1A         [ 7]  184 ld 	a, 	#0x1A
+   00ED 06 80         [ 7]  185 ld 	b, 	#0x80
+   00EF 0E 12         [ 7]  186 ld 	c, 	#0x12
+   00F1 16 0C         [ 7]  187 ld 	d, 	#0x0C
+   00F3 CD 3C 05      [17]  188 call cargar_plataforma
+                            189 
+   00F6 DD 21 00 00   [14]  190 ld ix, 	#platform_data3
+   00FA 3E 32         [ 7]  191 ld 	a, 	#0x32
+   00FC 06 64         [ 7]  192 ld 	b, 	#0x64
+   00FE 0E 0C         [ 7]  193 ld 	c, 	#0x0C
+   0100 16 0C         [ 7]  194 ld 	d, 	#0x0C
+   0102 CD 3C 05      [17]  195 call cargar_plataforma
+                            196 
+   0105 DD 21 00 00   [14]  197 ld ix, 	#platform_data4
+   0109 3E 00         [ 7]  198 ld 	a, 	#0x00
+   010B 06 50         [ 7]  199 ld 	b, 	#0x50
+   010D 0E 2A         [ 7]  200 ld 	c, 	#0x2A
+   010F 16 0C         [ 7]  201 ld 	d, 	#0x0C
+   0111 CD 3C 05      [17]  202 call cargar_plataforma
+                            203 
+                            204 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                            205 ; OBJETOS
+                            206 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                            207 ; OBJETOS
+   0114 DD 21 00 00   [14]  208 ld ix, 	#llave
+   0118 3E 48         [ 7]  209 ld 	a, 	#0x48
+   011A 06 2C         [ 7]  210 ld 	b, 	#0x2C
+   011C 0E 01         [ 7]  211 ld 	c, 	#1
+   011E CD 49 05      [17]  212 call cargar_objetos
+                            213 
+   0121 DD 21 00 00   [14]  214 ld ix, 	#puerta
+   0125 3E 00         [ 7]  215 ld 	a, 	#0x00
+   0127 06 A8         [ 7]  216 ld 	b, 	#0xA8
+   0129 0E 00         [ 7]  217 ld 	c, 	#0
+   012B CD 49 05      [17]  218 call cargar_objetos
+                            219 
+                            220 ;/////////////////// ENEMY
+   012E DD 21 00 00   [14]  221 ld 	ix, 	#enemy_data0
+   0132 3E 3E         [ 7]  222 ld 	a, 	#0x3E
+   0134 06 A8         [ 7]  223 ld  b, 	#0xA8
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 11.
+Hexadecimal [16-Bits]
+
+
+
+   0136 0E 03         [ 7]  224 ld 	c, 	#0x03
+   0138 CD 53 05      [17]  225 call 	cargar_enemigo
+                            226 
+   013B C9            [10]  227 ret
+                            228 
+                            229 
+                            230 
+                            231 ;/////////////////////////////////////////////////////////////////
+                            232 ; 					LEVEL 			2
+                            233 ;/////////////////////////////////////////////////////////////////
+   013C                     234 load_level2:
+                            235 
+   013C 3E 06         [ 7]  236 ld 	a, 	#6
+   013E 32 00 00      [13]  237 ld 	(n_plat), 	a
+   0141 3E 00         [ 7]  238 ld 	a, 	#0
+   0143 32 01 00      [13]  239 ld 	(n_enem), 	a
+                            240 
+   0146 DD 21 00 00   [14]  241 ld 	ix, #hero_data   	;; INICIALIZA HEROE
+   014A 3E 01         [ 7]  242 ld 	a, 	#0x01
+   014C 32 02 00      [13]  243 ld 	(hero_x), 	a
+   014F DD 77 00      [19]  244 ld 	e_x(ix), 	a
+   0152 3E A8         [ 7]  245 ld 	a, 		#0xA8
+   0154 32 03 00      [13]  246 ld 	(hero_y), 	a
+   0157 DD 77 01      [19]  247 ld 	e_y(ix), 	a
+                            248 
+   015A DD 21 00 00   [14]  249 ld ix, 	#platform_datas
+   015E 3E 00         [ 7]  250 ld 	a, 	#0
+   0160 06 B8         [ 7]  251 ld 	b, 	#184
+   0162 0E 12         [ 7]  252 ld 	c, 	#18
+   0164 16 0C         [ 7]  253 ld 	d, 	#12
+   0166 CD 3C 05      [17]  254 call cargar_plataforma
+                            255 
+   0169 DD 21 00 00   [14]  256 ld ix, 	#platform_data
+   016D 3E 22         [ 7]  257 ld 	a, 	#34
+   016F 06 B8         [ 7]  258 ld 	b, 	#184
+   0171 0E 12         [ 7]  259 ld 	c, 	#18
+   0173 16 0C         [ 7]  260 ld 	d, 	#12
+   0175 CD 3C 05      [17]  261 call cargar_plataforma
+                            262 
+   0178 DD 21 00 00   [14]  263 ld ix, 	#platform_data2
+   017C 3E 44         [ 7]  264 ld 	a, 	#68
+   017E 06 B8         [ 7]  265 ld 	b, 	#184
+   0180 0E 0C         [ 7]  266 ld 	c, 	#12
+   0182 16 0C         [ 7]  267 ld 	d, 	#12
+   0184 CD 3C 05      [17]  268 call cargar_plataforma
+                            269 
+   0187 DD 21 00 00   [14]  270 ld ix, 	#platform_data3
+   018B 3E 00         [ 7]  271 ld 	a, 	#0
+   018D 06 94         [ 7]  272 ld 	b, 	#148
+   018F 0E 0C         [ 7]  273 ld 	c, 	#12
+   0191 16 0C         [ 7]  274 ld 	d, 	#12
+   0193 CD 3C 05      [17]  275 call cargar_plataforma
+                            276 
+   0196 DD 21 00 00   [14]  277 ld ix, 	#platform_data4
+   019A 3E 00         [ 7]  278 ld 	a, 	#0
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 12.
+Hexadecimal [16-Bits]
+
+
+
+   019C 06 70         [ 7]  279 ld 	b, 	#112
+   019E 0E 06         [ 7]  280 ld 	c, 	#6
+   01A0 16 0C         [ 7]  281 ld 	d, 	#12
+   01A2 CD 3C 05      [17]  282 call cargar_plataforma
+                            283 
+   01A5 DD 21 00 00   [14]  284 ld ix, 	#platform_data5
+   01A9 3E 28         [ 7]  285 ld 	a, 	#40
+   01AB 06 7C         [ 7]  286 ld 	b, 	#124
+   01AD 0E 06         [ 7]  287 ld 	c, 	#6
+   01AF 16 48         [ 7]  288 ld 	d, 	#72
+   01B1 CD 3C 05      [17]  289 call cargar_plataforma
+                            290 
+                            291 
+                            292 ; OBJETOS
+   01B4 DD 21 00 00   [14]  293 ld ix, 	#llave
+   01B8 3E 00         [ 7]  294 ld 	a, 	#0
+   01BA 06 60         [ 7]  295 ld 	b, 	#96
+   01BC 0E 01         [ 7]  296 ld 	c, 	#1
+   01BE CD 49 05      [17]  297 call cargar_objetos
+                            298 
+   01C1 DD 21 00 00   [14]  299 ld ix, 	#puerta
+   01C5 3E 44         [ 7]  300 ld 	a, 	#68
+   01C7 06 A8         [ 7]  301 ld 	b, 	#168
+   01C9 0E 00         [ 7]  302 ld 	c, 	#0
+   01CB CD 49 05      [17]  303 call cargar_objetos
+                            304 
+   01CE DD 21 00 00   [14]  305 ld ix, 	#bala
+   01D2 3E 40         [ 7]  306 ld 	a, 	#0x40
+   01D4 06 6F         [ 7]  307 ld 	b, 	#0x6F
+   01D6 0E 01         [ 7]  308 ld 	c, 	#1
+   01D8 CD 49 05      [17]  309 call cargar_objetos
+                            310 
+   01DB C9            [10]  311 ret
+                            312 
+                            313 
+                            314 
+                            315 ;/////////////////////////////////////////////////////////////////
+                            316 ; 					LEVEL 			3   ;;reutlizando lvl 1
+                            317 ;/////////////////////////////////////////////////////////////////
+   01DC                     318 load_level3:
+   01DC 3E 05         [ 7]  319 ld 	a, 	#5
+   01DE 32 00 00      [13]  320 ld 	(n_plat), 	a
+                            321 
+   01E1 3E 02         [ 7]  322 ld 	a, 	#2
+   01E3 32 01 00      [13]  323 ld 	(n_enem), 	a
+   01E6 3E 01         [ 7]  324 ld 	a, 	#1
+   01E8 32 00 00      [13]  325 ld 	(init_enemy), 	a
+                            326 
+   01EB DD 21 00 00   [14]  327 ld 	ix, #hero_data   	;; INICIALIZA HEROE
+   01EF 3E 01         [ 7]  328 ld 	a, 	#0x01
+   01F1 32 02 00      [13]  329 ld 	(hero_x), 	a
+   01F4 DD 77 00      [19]  330 ld 	e_x(ix), 	a
+   01F7 3E A8         [ 7]  331 ld 	a, 	#0xA8
+   01F9 32 03 00      [13]  332 ld 	(hero_y),	a
+   01FC DD 77 01      [19]  333 ld 	e_y(ix), 	a
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 13.
+Hexadecimal [16-Bits]
+
+
+
+                            334 
+   01FF DD 21 00 00   [14]  335 ld ix, 	#platform_datas
+   0203 3E 00         [ 7]  336 ld 	a, 	#0x00
+   0205 06 B8         [ 7]  337 ld 	b, 	#0xB8
+   0207 0E 50         [ 7]  338 ld 	c, 	#0x50
+   0209 16 0C         [ 7]  339 ld 	d, 	#0x0C
+   020B CD 3C 05      [17]  340 call cargar_plataforma
+                            341 
+   020E DD 21 00 00   [14]  342 ld ix, 	#platform_data
+   0212 3E 32         [ 7]  343 ld 	a, 	#0x32
+   0214 06 98         [ 7]  344 ld 	b, 	#0x98
+   0216 0E 1E         [ 7]  345 ld 	c, 	#0x1E
+   0218 16 0C         [ 7]  346 ld 	d, 	#0x0C
+   021A CD 3C 05      [17]  347 call cargar_plataforma
+                            348 
+   021D DD 21 00 00   [14]  349 ld ix, 	#platform_data2
+   0221 3E 1A         [ 7]  350 ld 	a, 	#0x1A
+   0223 06 80         [ 7]  351 ld 	b, 	#0x80
+   0225 0E 12         [ 7]  352 ld 	c, 	#0x12
+   0227 16 0C         [ 7]  353 ld 	d, 	#0x0C
+   0229 CD 3C 05      [17]  354 call cargar_plataforma
+                            355 
+   022C DD 21 00 00   [14]  356 ld ix, 	#platform_data3
+   0230 3E 32         [ 7]  357 ld 	a, 	#0x32
+   0232 06 64         [ 7]  358 ld 	b, 	#0x64
+   0234 0E 0C         [ 7]  359 ld 	c, 	#0x0C
+   0236 16 0C         [ 7]  360 ld 	d, 	#0x0C
+   0238 CD 3C 05      [17]  361 call cargar_plataforma
+                            362 
+   023B DD 21 00 00   [14]  363 ld ix, 	#platform_data4
+   023F 3E 00         [ 7]  364 ld 	a, 	#0x00
+   0241 06 50         [ 7]  365 ld 	b, 	#0x50
+   0243 0E 2A         [ 7]  366 ld 	c, 	#0x2A
+   0245 16 0C         [ 7]  367 ld 	d, 	#0x0C
+   0247 CD 3C 05      [17]  368 call cargar_plataforma
+                            369 
+                            370 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                            371 ; OBJETOS
+                            372 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                            373 ; OBJETOS
+   024A DD 21 00 00   [14]  374 ld ix, 	#llave
+   024E 3E 02         [ 7]  375 ld 	a, 	#0x02
+   0250 06 38         [ 7]  376 ld 	b, 	#0x38
+   0252 0E 01         [ 7]  377 ld 	c, 	#1
+   0254 CD 49 05      [17]  378 call cargar_objetos
+                            379 
+   0257 DD 21 00 00   [14]  380 ld ix, 	#puerta
+   025B 3E 00         [ 7]  381 ld 	a, 	#0x00
+   025D 06 A8         [ 7]  382 ld 	b, 	#0xA8
+   025F 0E 00         [ 7]  383 ld 	c, 	#0
+   0261 CD 49 05      [17]  384 call cargar_objetos
+                            385 
+                            386 ;/////////////////// ENEMY
+   0264 DD 21 00 00   [14]  387 ld 	ix, 	#enemy_data0
+   0268 3E 3E         [ 7]  388 ld 	a, 	#0x3E
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 14.
+Hexadecimal [16-Bits]
+
+
+
+   026A 06 A8         [ 7]  389 ld  b, 	#0xA8
+   026C 0E 03         [ 7]  390 ld 	c, 	#0x03
+   026E CD 53 05      [17]  391 call 	cargar_enemigo
+                            392 
+   0271 DD 21 00 00   [14]  393 ld 	ix, 	#enemy_data1
+   0275 3E 10         [ 7]  394 ld 	a, 	#0x10
+   0277 06 40         [ 7]  395 ld  b, 	#0x40
+   0279 0E 03         [ 7]  396 ld 	c, 	#0x03
+   027B CD 53 05      [17]  397 call 	cargar_enemigo
+                            398 
+                            399 
+   027E C9            [10]  400 ret
+                            401 
+                            402 
+                            403 
+                            404 
+                            405 ;/////////////////////////////////////////////////////////////////
+                            406 ; 					LEVEL 			8
+                            407 ;/////////////////////////////////////////////////////////////////
+                            408 
+   027F                     409 load_level8:
+                            410 
+   027F 3E 0C         [ 7]  411 ld 	a, 	#12
+   0281 32 00 00      [13]  412 ld 	(n_plat), 	a
+   0284 3E 01         [ 7]  413 ld 	a, 	#1
+   0286 32 01 00      [13]  414 ld 	(n_enem), 	a
+   0289 3E 01         [ 7]  415 ld 	a, 	#1
+   028B 32 00 00      [13]  416 ld 	(init_enemy), 	a
+                            417 
+   028E DD 21 00 00   [14]  418 ld 	ix, #hero_data   	;; INICIALIZA HEROE
+   0292 3E 01         [ 7]  419 ld 	a, 	#0x01
+   0294 32 02 00      [13]  420 ld 	(hero_x), 	a
+   0297 DD 77 00      [19]  421 ld 	e_x(ix), 	a
+   029A 3E A8         [ 7]  422 ld 	a, 	#0xA8
+   029C 32 03 00      [13]  423 ld 	(hero_y),	a
+   029F DD 77 01      [19]  424 ld 	e_y(ix), 	a
+                            425 
+   02A2 DD 21 00 00   [14]  426 ld ix, 	#platform_datas
+   02A6 3E 00         [ 7]  427 ld 	a, 	#0
+   02A8 06 B8         [ 7]  428 ld 	b, 	#184
+   02AA 0E 0C         [ 7]  429 ld 	c, 	#12
+   02AC 16 0C         [ 7]  430 ld 	d, 	#12
+   02AE CD 3C 05      [17]  431 call cargar_plataforma
+                            432 
+   02B1 DD 21 00 00   [14]  433 ld ix, 	#platform_data
+   02B5 3E 0C         [ 7]  434 ld 	a, 	#12
+   02B7 06 A4         [ 7]  435 ld 	b, 	#164
+   02B9 0E 02         [ 7]  436 ld 	c, 	#2
+   02BB 16 08         [ 7]  437 ld 	d, 	#8
+   02BD CD 3C 05      [17]  438 call cargar_plataforma
+                            439 
+   02C0 DD 21 00 00   [14]  440 ld ix, 	#platform_data2
+   02C4 3E 18         [ 7]  441 ld 	a, 	#24
+   02C6 06 A4         [ 7]  442 ld 	b, 	#164
+   02C8 0E 02         [ 7]  443 ld 	c, 	#2
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 15.
+Hexadecimal [16-Bits]
+
+
+
+   02CA 16 08         [ 7]  444 ld 	d, 	#8
+   02CC CD 3C 05      [17]  445 call cargar_plataforma
+                            446 
+   02CF DD 21 00 00   [14]  447 ld ix, 	#platform_data3
+   02D3 3E 24         [ 7]  448 ld 	a, 	#36
+   02D5 06 A4         [ 7]  449 ld 	b, 	#164
+   02D7 0E 02         [ 7]  450 ld 	c, 	#2
+   02D9 16 08         [ 7]  451 ld 	d, 	#8
+   02DB CD 3C 05      [17]  452 call cargar_plataforma
+                            453 
+   02DE DD 21 00 00   [14]  454 ld ix, 	#platform_data4
+   02E2 3E 30         [ 7]  455 ld 	a, 	#48
+   02E4 06 A4         [ 7]  456 ld 	b, 	#164
+   02E6 0E 02         [ 7]  457 ld 	c, 	#2
+   02E8 16 08         [ 7]  458 ld 	d, 	#8
+   02EA CD 3C 05      [17]  459 call cargar_plataforma
+                            460 
+   02ED DD 21 00 00   [14]  461 ld ix, 	#platform_data5
+   02F1 3E 3C         [ 7]  462 ld 	a, 	#60
+   02F3 06 A4         [ 7]  463 ld 	b, 	#164
+   02F5 0E 02         [ 7]  464 ld 	c, 	#2
+   02F7 16 08         [ 7]  465 ld 	d, 	#8
+   02F9 CD 3C 05      [17]  466 call cargar_plataforma
+                            467 
+                            468 
+   02FC DD 21 00 00   [14]  469 ld ix, 	#platform_data6
+   0300 3E 44         [ 7]  470 ld 	a, 	#68
+   0302 06 A0         [ 7]  471 ld 	b, 	#160
+   0304 0E 0C         [ 7]  472 ld 	c, 	#12
+   0306 16 0C         [ 7]  473 ld 	d, 	#12
+   0308 CD 3C 05      [17]  474 call cargar_plataforma
+                            475 
+                            476 
+   030B DD 21 00 00   [14]  477 ld ix, 	#platform_data7
+   030F 3E 4A         [ 7]  478 ld 	a, 	#74
+   0311 06 84         [ 7]  479 ld 	b, 	#132
+   0313 0E 06         [ 7]  480 ld 	c, 	#6
+   0315 16 08         [ 7]  481 ld 	d, 	#8
+   0317 CD 3C 05      [17]  482 call cargar_plataforma
+                            483 
+                            484 
+   031A DD 21 00 00   [14]  485 ld ix, 	#platform_data8
+   031E 3E 00         [ 7]  486 ld 	a, 	#0
+   0320 06 78         [ 7]  487 ld 	b, 	#120
+   0322 0E 42         [ 7]  488 ld 	c, 	#66
+   0324 16 0C         [ 7]  489 ld 	d, 	#12
+   0326 CD 3C 05      [17]  490 call cargar_plataforma
+                            491 
+   0329 DD 21 00 00   [14]  492 ld ix, 	#platform_data9
+   032D 3E 00         [ 7]  493 ld 	a, 	#0
+   032F 06 58         [ 7]  494 ld 	b, 	#88
+   0331 0E 06         [ 7]  495 ld 	c, 	#6
+   0333 16 0C         [ 7]  496 ld 	d, 	#12
+   0335 CD 3C 05      [17]  497 call cargar_plataforma
+                            498 
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 16.
+Hexadecimal [16-Bits]
+
+
+
+   0338 DD 21 00 00   [14]  499 ld ix, 	#platform_data10
+   033C 3E 06         [ 7]  500 ld 	a, 	#6
+   033E 06 40         [ 7]  501 ld 	b, 	#64
+   0340 0E 06         [ 7]  502 ld 	c, 	#6
+   0342 16 0C         [ 7]  503 ld 	d, 	#12
+   0344 CD 3C 05      [17]  504 call cargar_plataforma
+                            505 
+   0347 DD 21 00 00   [14]  506 ld ix, 	#platform_data11
+   034B 3E 14         [ 7]  507 ld 	a, 	#20
+   034D 06 34         [ 7]  508 ld 	b, 	#52
+   034F 0E 3C         [ 7]  509 ld 	c, 	#60
+   0351 16 08         [ 7]  510 ld 	d, 	#8
+   0353 CD 3C 05      [17]  511 call cargar_plataforma
+                            512 
+                            513 
+                            514 
+                            515 ; OBJETOS
+   0356 DD 21 00 00   [14]  516 ld ix, 	#llave
+   035A 3E 48         [ 7]  517 ld 	a, 	#72
+   035C 06 24         [ 7]  518 ld 	b, 	#36
+   035E 0E 01         [ 7]  519 ld 	c, 	#1
+   0360 CD 49 05      [17]  520 call cargar_objetos
+                            521 
+   0363 DD 21 00 00   [14]  522 ld ix, 	#puerta
+   0367 3E 00         [ 7]  523 ld 	a, 	#0
+   0369 06 A8         [ 7]  524 ld 	b, 	#168
+   036B 0E 00         [ 7]  525 ld 	c, 	#0
+   036D CD 49 05      [17]  526 call cargar_objetos
+                            527 
+   0370 DD 21 00 00   [14]  528 ld ix, 	#bala
+   0374 3E 40         [ 7]  529 ld 	a, 	#0x40
+   0376 06 6C         [ 7]  530 ld 	b, 	#0x6C
+   0378 0E 01         [ 7]  531 ld 	c, 	#1
+   037A CD 49 05      [17]  532 call cargar_objetos
+                            533 
+                            534 
+                            535 ;/////////////////// ENEMY
+   037D DD 21 00 00   [14]  536 ld 	ix, 	#enemy_data0
+   0381 3E 00         [ 7]  537 ld 	a, 	#0
+   0383 06 68         [ 7]  538 ld  b, 	#104
+   0385 0E 03         [ 7]  539 ld 	c, 	#0x03
+   0387 CD 53 05      [17]  540 call 	cargar_enemigo
+                            541 
+   038A DD 21 00 00   [14]  542 ld 	ix, 	#enemy_data1
+   038E 3E 02         [ 7]  543 ld 	a, 	#0x02
+   0390 06 2C         [ 7]  544 ld  b, 	#0x2C
+   0392 0E 03         [ 7]  545 ld 	c, 	#0x03
+   0394 CD 53 05      [17]  546 call 	cargar_enemigo
+                            547 
+   0397 DD 21 00 00   [14]  548 ld 	ix, 	#enemy_data2
+   039B 3E 12         [ 7]  549 ld 	a, 	#0x12
+   039D 06 46         [ 7]  550 ld  b, 	#0x46
+   039F 0E 03         [ 7]  551 ld 	c, 	#0x03
+   03A1 CD 53 05      [17]  552 call 	cargar_enemigo
+                            553 
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 17.
+Hexadecimal [16-Bits]
+
+
+
+   03A4 DD 21 00 00   [14]  554 ld 	ix, 	#enemy_data3
+   03A8 3E 26         [ 7]  555 ld 	a, 	#0x26
+   03AA 06 56         [ 7]  556 ld  b, 	#0x56
+   03AC 0E 03         [ 7]  557 ld 	c, 	#0x03
+   03AE CD 53 05      [17]  558 call 	cargar_enemigo
+                            559 
+   03B1 C9            [10]  560 ret
+                            561 
+                            562 ;/////////////////////////////////////////////////////////////////
+                            563 ; 					LEVEL 			9
+                            564 ;/////////////////////////////////////////////////////////////////
+   03B2                     565 load_level9:
+   03B2 3E 09         [ 7]  566 ld 	a, 	#9
+   03B4 32 00 00      [13]  567 ld 	(n_plat), 	a
+   03B7 3E 00         [ 7]  568 ld 	a, 	#0
+   03B9 32 01 00      [13]  569 ld 	(n_enem), 	a
+                            570 
+   03BC DD 21 00 00   [14]  571 ld 	ix, #hero_data   	;; INICIALIZA HEROE
+   03C0 3E 01         [ 7]  572 ld 	a, 	#0x01
+   03C2 32 02 00      [13]  573 ld 	(hero_x), 	a
+   03C5 DD 77 00      [19]  574 ld 	e_x(ix), 	a
+   03C8 3E 34         [ 7]  575 ld 	a, 	#0x34
+   03CA 32 03 00      [13]  576 ld 	(hero_y), 	a
+   03CD DD 77 01      [19]  577 ld 	e_y(ix), 	a
+                            578 
+                            579 ;;las de 2
+   03D0 DD 21 00 00   [14]  580 ld ix, 	#platform_datas	;;
+   03D4 3E 00         [ 7]  581 ld 	a, 	#0
+   03D6 06 50         [ 7]  582 ld 	b, 	#80
+   03D8 0E 0C         [ 7]  583 ld 	c, 	#12
+   03DA 16 0C         [ 7]  584 ld 	d, 	#0x0C
+   03DC CD 3C 05      [17]  585 call cargar_plataforma
+                            586 
+   03DF DD 21 00 00   [14]  587 ld ix, 	#platform_data	;;
+   03E3 3E 44         [ 7]  588 ld 	a, 	#68
+   03E5 06 6C         [ 7]  589 ld 	b, 	#108
+   03E7 0E 0C         [ 7]  590 ld 	c, 	#12
+   03E9 16 0C         [ 7]  591 ld 	d, 	#0x0C
+   03EB CD 3C 05      [17]  592 call cargar_plataforma
+                            593 
+                            594 
+   03EE DD 21 00 00   [14]  595 ld ix, 	#platform_data2	;;
+   03F2 3E 1A         [ 7]  596 ld 	a, 	#26
+   03F4 06 40         [ 7]  597 ld 	b, 	#64
+   03F6 0E 06         [ 7]  598 ld 	c, 	#6
+   03F8 16 0C         [ 7]  599 ld 	d, 	#0x0C
+   03FA CD 3C 05      [17]  600 call cargar_plataforma
+                            601 
+   03FD DD 21 00 00   [14]  602 ld ix, 	#platform_data3
+   0401 3E 00         [ 7]  603 ld 	a, 	#0
+   0403 06 A0         [ 7]  604 ld 	b, 	#160
+   0405 0E 06         [ 7]  605 ld 	c, 	#6
+   0407 16 0C         [ 7]  606 ld 	d, 	#0x0C
+   0409 CD 3C 05      [17]  607 call cargar_plataforma
+                            608 
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 18.
+Hexadecimal [16-Bits]
+
+
+
+   040C DD 21 00 00   [14]  609 ld ix, 	#platform_data4
+   0410 3E 14         [ 7]  610 ld 	a, 	#20
+   0412 06 84         [ 7]  611 ld 	b, 	#132
+   0414 0E 06         [ 7]  612 ld 	c, 	#6
+   0416 16 0C         [ 7]  613 ld 	d, 	#0x0C
+   0418 CD 3C 05      [17]  614 call cargar_plataforma
+                            615 
+   041B DD 21 00 00   [14]  616 ld ix, 	#platform_data5
+   041F 3E 14         [ 7]  617 ld 	a, 	#20
+   0421 06 B8         [ 7]  618 ld 	b, 	#184
+   0423 0E 06         [ 7]  619 ld 	c, 	#6
+   0425 16 0C         [ 7]  620 ld 	d, 	#0x0C
+   0427 CD 3C 05      [17]  621 call cargar_plataforma
+                            622 
+   042A DD 21 00 00   [14]  623 ld ix, 	#platform_data6
+   042E 3E 2E         [ 7]  624 ld 	a, 	#46
+   0430 06 78         [ 7]  625 ld 	b, 	#120
+   0432 0E 06         [ 7]  626 ld 	c, 	#6
+   0434 16 0C         [ 7]  627 ld 	d, 	#0x0C
+   0436 CD 3C 05      [17]  628 call cargar_plataforma
+                            629 
+   0439 DD 21 00 00   [14]  630 ld ix, 	#platform_data7
+   043D 3E 2E         [ 7]  631 ld 	a, 	#46
+   043F 06 B8         [ 7]  632 ld 	b, 	#184
+   0441 0E 06         [ 7]  633 ld 	c, 	#6
+   0443 16 0C         [ 7]  634 ld 	d, 	#0x0C
+   0445 CD 3C 05      [17]  635 call cargar_plataforma
+                            636 
+   0448 DD 21 00 00   [14]  637 ld ix, 	#platform_data8
+   044C 3E 4A         [ 7]  638 ld 	a, 	#74
+   044E 06 B8         [ 7]  639 ld 	b, 	#184
+   0450 0E 06         [ 7]  640 ld 	c, 	#6
+   0452 16 0C         [ 7]  641 ld 	d, 	#0x0C
+   0454 CD 3C 05      [17]  642 call cargar_plataforma
+                            643 
+                            644 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                            645 ; OBJETOS
+                            646 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                            647 ; OBJETOS
+   0457 DD 21 00 00   [14]  648 ld ix, 	#llave
+   045B 3E 4A         [ 7]  649 ld 	a, 	#0x4A
+   045D 06 A8         [ 7]  650 ld 	b, 	#0xA8
+   045F 0E 01         [ 7]  651 ld 	c, 	#1
+   0461 CD 49 05      [17]  652 call cargar_objetos
+                            653 
+   0464 DD 21 00 00   [14]  654 ld ix, 	#puerta
+   0468 3E 46         [ 7]  655 ld 	a, 	#70
+   046A 06 5C         [ 7]  656 ld 	b, 	#92
+   046C 0E 00         [ 7]  657 ld 	c, 	#0
+   046E CD 49 05      [17]  658 call cargar_objetos
+                            659 
+   0471 DD 21 00 00   [14]  660 ld ix, 	#bala
+   0475 3E 1A         [ 7]  661 ld 	a, 	#26
+   0477 06 30         [ 7]  662 ld 	b, 	#48
+   0479 0E 01         [ 7]  663 ld 	c, 	#1
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 19.
+Hexadecimal [16-Bits]
+
+
+
+   047B CD 49 05      [17]  664 call cargar_objetos
+                            665 
+   047E C9            [10]  666 ret
+                            667 
+                            668 
+                            669 ;/////////////////////////////////////////////////////////////////
+                            670 ; 					LEVEL 			10
+                            671 ;/////////////////////////////////////////////////////////////////
+                            672 
+   047F                     673 load_level10:
+   047F 3E 05         [ 7]  674 ld 	a, 	#5
+   0481 32 00 00      [13]  675 ld 	(n_plat), 	a
+                            676 
+   0484 3E 04         [ 7]  677 ld 	a, 	#4
+   0486 32 01 00      [13]  678 ld 	(n_enem), 	a
+   0489 3E 01         [ 7]  679 ld 	a, 	#1
+   048B 32 00 00      [13]  680 ld 	(init_enemy), 	a
+                            681 
+   048E DD 21 00 00   [14]  682 ld 	ix, #hero_data   	;; INICIALIZA HEROE
+   0492 3E 01         [ 7]  683 ld 	a, 	#0x01
+   0494 32 02 00      [13]  684 ld 	(hero_x), 	a
+   0497 DD 77 00      [19]  685 ld 	e_x(ix), 	a
+   049A 3E A8         [ 7]  686 ld 	a, 	#0xA8
+   049C 32 03 00      [13]  687 ld 	(hero_y), 	a
+   049F DD 77 01      [19]  688 ld 	e_y(ix), 	a
+                            689 
+   04A2 DD 21 00 00   [14]  690 ld ix, 	#platform_datas	;;
+   04A6 3E 00         [ 7]  691 ld 	a, 	#0x00
+   04A8 06 B8         [ 7]  692 ld 	b, 	#0xB8
+   04AA 0E 4C         [ 7]  693 ld 	c, 	#0x4C
+   04AC 16 0C         [ 7]  694 ld 	d, 	#0x0C
+   04AE CD 3C 05      [17]  695 call cargar_plataforma
+                            696 
+   04B1 DD 21 00 00   [14]  697 ld ix, 	#platform_data
+   04B5 3E 00         [ 7]  698 ld 	a, 	#0x00
+   04B7 06 98         [ 7]  699 ld 	b, 	#0x98
+   04B9 0E 40         [ 7]  700 ld 	c, 	#0x40
+   04BB 16 0C         [ 7]  701 ld 	d, 	#0x0C
+   04BD CD 3C 05      [17]  702 call cargar_plataforma
+                            703 
+   04C0 DD 21 00 00   [14]  704 ld ix, 	#platform_data2
+   04C4 3E 10         [ 7]  705 ld 	a, 	#0x10
+   04C6 06 78         [ 7]  706 ld 	b, 	#0x78
+   04C8 0E 4E         [ 7]  707 ld 	c, 	#0x4E
+   04CA 16 0C         [ 7]  708 ld 	d, 	#0x0C
+   04CC CD 3C 05      [17]  709 call cargar_plataforma
+                            710 
+   04CF DD 21 00 00   [14]  711 ld ix, 	#platform_data3
+   04D3 3E 00         [ 7]  712 ld 	a, 	#0x00
+   04D5 06 58         [ 7]  713 ld 	b, 	#0x58
+   04D7 0E 40         [ 7]  714 ld 	c, 	#0x40
+   04D9 16 0C         [ 7]  715 ld 	d, 	#0x0C
+   04DB CD 3C 05      [17]  716 call cargar_plataforma
+                            717 
+   04DE DD 21 00 00   [14]  718 ld ix, 	#platform_data4
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 20.
+Hexadecimal [16-Bits]
+
+
+
+   04E2 3E 20         [ 7]  719 ld 	a, 	#0x20
+   04E4 06 38         [ 7]  720 ld 	b, 	#0x38
+   04E6 0E 4E         [ 7]  721 ld 	c, 	#0x4E
+   04E8 16 0C         [ 7]  722 ld 	d, 	#0x0C
+   04EA CD 3C 05      [17]  723 call cargar_plataforma
+                            724 
+                            725 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+                            726 ; OBJETOS
+                            727 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+   04ED DD 21 00 00   [14]  728 ld ix, 	#llave
+   04F1 3E 4A         [ 7]  729 ld 	a, 	#0x4A
+   04F3 06 50         [ 7]  730 ld 	b, 	#80
+   04F5 0E 01         [ 7]  731 ld 	c, 	#1
+   04F7 CD 49 05      [17]  732 call cargar_objetos
+                            733 
+   04FA DD 21 00 00   [14]  734 ld ix, 	#puerta
+   04FE 3E 48         [ 7]  735 ld 	a, 	#0x48
+   0500 06 28         [ 7]  736 ld 	b, 	#0x28
+   0502 0E 00         [ 7]  737 ld 	c, 	#0
+   0504 CD 49 05      [17]  738 call cargar_objetos
+                            739 
+                            740 
+                            741 ;/////////////////// ENEMY
+   0507 DD 21 00 00   [14]  742 ld 	ix, 	#enemy_data0
+   050B 3E 30         [ 7]  743 ld 	a, 	#0x30
+   050D 06 A8         [ 7]  744 ld  b, 	#168
+   050F 0E 03         [ 7]  745 ld 	c, 	#0x03
+   0511 CD 53 05      [17]  746 call 	cargar_enemigo
+                            747 
+   0514 DD 21 00 00   [14]  748 ld 	ix, 	#enemy_data1
+   0518 3E 12         [ 7]  749 ld 	a, 	#0x12
+   051A 06 88         [ 7]  750 ld  b, 	#136
+   051C 0E 03         [ 7]  751 ld 	c, 	#0x03
+   051E CD 53 05      [17]  752 call 	cargar_enemigo
+                            753 
+   0521 DD 21 00 00   [14]  754 ld 	ix, 	#enemy_data2
+   0525 3E 30         [ 7]  755 ld 	a, 	#0x30
+   0527 06 68         [ 7]  756 ld  b, 	#104
+   0529 0E 03         [ 7]  757 ld 	c, 	#0x03
+   052B CD 53 05      [17]  758 call 	cargar_enemigo
+                            759 
+   052E DD 21 00 00   [14]  760 ld 	ix, 	#enemy_data3
+   0532 3E 12         [ 7]  761 ld 	a, 	#0x12
+   0534 06 48         [ 7]  762 ld  b, 	#72
+   0536 0E 03         [ 7]  763 ld 	c, 	#0x03
+   0538 CD 53 05      [17]  764 call 	cargar_enemigo
+                            765 
+                            766 
+   053B C9            [10]  767 ret
+                            768 
+   053C                     769 cargar_plataforma:
+                            770 
+   053C DD 77 00      [19]  771 ld 	p_x(ix), 	a
+   053F DD 70 01      [19]  772 ld 	p_y(ix), 	b
+   0542 DD 71 04      [19]  773 ld 	p_w(ix), 	c
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 21.
+Hexadecimal [16-Bits]
+
+
+
+   0545 DD 72 05      [19]  774 ld 	p_h(ix), 	d
+                            775 
+   0548 C9            [10]  776 ret
+                            777 
+   0549                     778 cargar_objetos:
+                            779 
+   0549 DD 77 00      [19]  780 ld 	obj_x(ix), 	a
+   054C DD 70 01      [19]  781 ld 	obj_y(ix), 	b
+   054F DD 71 07      [19]  782 ld 	obj_open(ix), 	c
+   0552 C9            [10]  783 ret
+                            784 
+   0553                     785 cargar_enemigo:
+   0553 DD 77 00      [19]  786 ld 	en_x(ix),		a 	
+   0556 DD 70 01      [19]  787 ld 	en_y(ix),		b
+   0559 DD 71 08      [19]  788 ld 	en_life(ix),	c
+   055C C9            [10]  789 ret

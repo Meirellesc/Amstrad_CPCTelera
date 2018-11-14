@@ -1,0 +1,14 @@
+XL2
+H 1 areas B global symbols
+S k_enemy_size Ref0000
+S enemy_data0 Ref0000
+S enemy_data1 Ref0000
+S enemy_data2 Ref0000
+S enemy_data3 Ref0000
+S enemy_data4 Ref0000
+S enemy_vector Ref0000
+S pos_y_en Ref0000
+S enemy_interaction Ref0000
+S .__.ABS. Def0000
+S init_enemy Ref0000
+A _CODE size 0 flags 0 addr 0

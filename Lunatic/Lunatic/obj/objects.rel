@@ -1,0 +1,153 @@
+XL2
+H 1 areas 36 global symbols
+S cpct_setPalette_asm Ref0000
+S cpct_isKeyPressed_asm Ref0000
+S ent_background Ref0000
+S cpct_setPALColour_asm Ref0000
+S draw_numbers Ref0000
+S hero_jump Ref0000
+S cpct_drawStringM0_asm Ref0000
+S colision_borde Ref0000
+S hero_shot Ref0000
+S startShot Ref0000
+S cpct_drawSprite_asm Ref0000
+S update_draw_life Ref0000
+S carga_todo Ref0000
+S ent_draw Ref0000
+S level Ref0000
+S colision_check_border Ref0000
+S jumpControl Ref0000
+S shot_direction Ref0000
+S .__.ABS. Def0000
+S cargar_nivel2 Ref0000
+S shotControl Ref0000
+S colision Ref0000
+S colision_enemy_platform Ref0000
+S cpct_drawSpriteMasked_asm Ref0000
+S carga_fondos Ref0000
+S hero_data Ref0000
+S ent_update Ref0000
+S pos_y Ref0000
+S hero_fall Ref0000
+S ent_isJumping_or_canFall Ref0000
+S cargar_nivel Ref0000
+S end_level Ref0000
+S _bala_sp Ref0000
+S hero_dispara Ref0000
+S cpct_setVideoMode_asm Ref0000
+S cpct_waitVSYNC_asm Ref0000
+S _puerta_sp Ref0000
+S s_background Ref0000
+S munition Ref0000
+S _llave_sp Ref0000
+S shot_data Ref0000
+S colision_check_ex Ref0000
+S cpct_disableFirmware_asm Ref0000
+S cpct_drawSolidBox_asm Ref0000
+S cpct_drawSpriteBlended_asm Ref0000
+S colision_check Ref0000
+S cpct_setDrawCharM0_asm Ref0000
+S cpct_scanKeyboard_asm Ref0000
+S cpct_getScreenPtr_asm Ref0000
+A _CODE size 118 flags 0 addr 0
+S draw_obj Def00F8
+S bala Def0010
+S puerta Def0008
+S llave Def0000
+S main_obj Def00D8
+T 00 00
+R 00 00 00 00
+T 00 00
+R 00 00 00 00
+T 00 00 20 80 05 10 00 00 01 01
+R 00 00 00 00 02 06 27 00
+T 08 00
+R 00 00 00 00
+T 08 00 1A 00 08 10 00 00 02 00
+R 00 00 00 00 02 06 24 00
+T 10 00
+R 00 00 00 00
+T 10 00 40 6C 05 0C 00 00 03 00
+R 00 00 00 00 02 06 20 00
+T 18 00
+R 00 00 00 00
+T 18 00 11 00 C0 DD 4E 00 DD 46 01 CD 00 00 EB DD
+R 00 00 00 00 02 0C 30 00
+T 26 00 6E 04 DD 66 05 DD 4E 03 DD 46 02 CD 00 00
+R 00 00 00 00 02 0E 2C 00
+T 34 00 C9
+R 00 00 00 00
+T 35 00
+R 00 00 00 00
+T 35 00 11 00 C0 FD 4E 00 FD 46 01 CD 00 00 EB FD
+R 00 00 00 00 02 0C 30 00
+T 43 00 6E 04 FD 66 05 FD 4E 03 FD 46 02 CD 00 00
+R 00 00 00 00 02 0E 2C 00
+T 51 00 C9
+R 00 00 00 00
+T 52 00
+R 00 00 00 00
+T 52 00 DD 7E 07 FE 00 CA 8D 00 FD 21 00 00 CD
+R 00 00 00 00 00 08 00 00 02 0C 19 00
+T 5F 00 00 00 3A 00 00 FE 01 C2 8D 00 DD 7E 06 FE
+R 00 00 00 00 02 02 29 00 02 05 15 00 00 0A 00 00
+T 6D 00 01 C2 75 00 CD 8E 00 C9
+R 00 00 00 00 00 04 00 00 00 07 00 00
+T 75 00
+R 00 00 00 00
+T 75 00 DD 7E 06 FE 02 C2 81 00 CD AB 00 C9
+R 00 00 00 00 00 08 00 00 00 0B 00 00
+T 81 00
+R 00 00 00 00
+T 81 00 DD 7E 06 FE 03 C2 8D 00 CD BE 00 C9
+R 00 00 00 00 00 08 00 00 00 0B 00 00
+T 8D 00
+R 00 00 00 00
+T 8D 00
+R 00 00 00 00
+T 8D 00 C9
+R 00 00 00 00
+T 8E 00
+R 00 00 00 00
+T 8E 00 3E 00 DD 77 07 CD 18 00 FD 21 08 00 3E 01
+R 00 00 00 00 00 08 00 00 00 0C 00 00
+T 9C 00 FD 77 07 FD 21 08 00 CD 35 00 FD 21 00 00
+R 00 00 00 00 00 07 00 00 00 0A 00 00 02 0E 19 00
+T AA 00 C9
+R 00 00 00 00
+T AB 00
+R 00 00 00 00
+T AB 00 3E 00 DD 77 07 3A 00 00 C6 01 32 00 00 3E
+R 00 00 00 00 02 08 0E 00 02 0D 0E 00
+T B9 00 01 32 00 00 C9
+R 00 00 00 00 02 04 1F 00
+T BE 00
+R 00 00 00 00
+T BE 00 3E 00 DD 77 07 CD 18 00 3A 00 00 CD 00 00
+R 00 00 00 00 00 08 00 00 02 0B 26 00 02 0E 04 00
+T CC 00 3E 09 32 00 00 3A 00 00 CD 00 00 C9
+R 00 00 00 00 02 05 26 00 02 08 26 00 02 0B 04 00
+T D8 00
+R 00 00 00 00
+T D8 00 3E 03 DD 21 00 00
+R 00 00 00 00 00 06 00 00
+T DE 00
+R 00 00 00 00
+T DE 00 32 ED 00 CD 52 00 DD 7E 07 FE 00 CA EC 00
+R 00 00 00 00 00 03 00 00 00 06 00 00 00 0E 00 00
+T EC 00
+R 00 00 00 00
+T EC 00 3E 00 01 08 00 DD 09 3D C2 DE 00 C9
+R 00 00 00 00 00 0B 00 00
+T F8 00
+R 00 00 00 00
+T F8 00 3E 03 DD 21 00 00
+R 00 00 00 00 00 06 00 00
+T FE 00
+R 00 00 00 00
+T FE 00 32 0D 01 DD 7E 07 FE 00 CA 0C 01 CD 18 00
+R 00 00 00 00 00 03 00 00 00 0B 00 00 00 0E 00 00
+T 0C 01
+R 00 00 00 00
+T 0C 01 3E 00 01 08 00 DD 09 3D C2 FE 00 C9
+R 00 00 00 00 00 0B 00 00

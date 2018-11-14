@@ -1,0 +1,27 @@
+DEF .__.ABS. 0x0
+DEF l__CABS 0x0
+DEF l__DABS 0x0
+DEF l__DATA 0x0
+DEF l__GSFINAL 0x0
+DEF l__GSINIT 0x0
+DEF l__HOME 0x0
+DEF l__INITIALIZED 0x0
+DEF l__INITIALIZER 0x0
+DEF s__CABS 0x0
+DEF s__DABS 0x0
+DEF l__CODE 0x97C
+DEF s__CODE 0x4000
+DEF s__DATA 0x497C
+DEF s__GSFINAL 0x497C
+DEF s__GSINIT 0x497C
+DEF s__HOME 0x497C
+DEF s__INITIALIZED 0x497C
+DEF s__INITIALIZER 0x497C
+DEF _palette 0x4000
+DEF _Start_2px_pack 0x4010
+DEF _main 0x4967
+DEF _cpct_disableFirmware 0x496C
+DEF _cpct_removeInterruptHandler 0x496C
+DEF cpct_disableFirmware_asm 0x496C
+DEF cpct_removeInterruptHandler_asm 0x496C
+LOAD obj/map.ihx

@@ -1,0 +1,3354 @@
+; ============================================
+;
+; BBBBBB    AA    SSSS  KKK  KK EEEEEEE TTTTTT
+;  BB  BB  AAAA  SS  SS  KK  KK  EE   E T TT T
+;  BB  BB AA  AA SS      KK KK   EE E     TT
+;  BBBBB  AA  AA  SSSS   KKKK    EEEE     TT
+;  BB  BB AAAAAA     SS  KK KK   EE E     TT
+;  BB  BB AA  AA SS  SS  KK  KK  EE   E   TT
+; BBBBBB  AA  AA  SSSS  KKK  KK EEEEEEE  TTTT
+;
+;  cccc   aaaa   ssss   eeee   ssss  hecho por
+; cc  cc     aa ss     ee  ee ss       Cesar
+; cc      aaaaa  ssss  eeeeee  ssss   Nicolas
+; cc  cc aa  aa     ss ee         ss Gonzalez/
+;  cccc   aaa aasssss   eeeeessssss   CNGSOFT
+;
+; ============================================
+; === 2017-09-21 12:09 -- 2017-10-31 23:55 ===
+; ============================================
+
+load = $0170
+type = 0;2;
+exec = boot
+
+; AMSDOS HEADER
+ org load-$80
+ ds $12
+ db type
+ dw 0,load
+ ds 1
+ dw last-load,exec
+ ds $24
+ dw last-load
+ ds 1
+ dw type+(lo load)+(hi load)+2*(lo(last-load))+2*(hi(last-load))+(lo exec)+(hi exec)
+ ds $3B
+
+; BASIC HEADER
+ dw boot-$-2,47195,$1A83,boot,$C001
+text db "BASKET CASES binary"
+text_ ds 3
+
+; ========================================================================
+; INIT HARDWARE
+; ========================================================================
+
+boot di
+ ld sp,$0100
+ ld hl,int7
+ ld ($39),hl
+ call readkeys ; reset keyboard
+ call chip_stop ; reset sound
+
+; LOAD HARDWARE PALETTE
+ ld hl,hardink1+16+1
+ ld bc,$7F00+16+1
+hardinks_ dec hl
+ ld a,(hl)
+ dec c
+ out (c),c
+ out (c),a
+ jr nz,hardinks_
+ ld a,$8C+0 ; set MODE 0
+ out (c),a
+
+; LOAD CRTC SETTINGS: 40X25 $C000
+ ld bc,$BC01
+ ld hl,$282E
+ call crtcpair
+ ld c,lo $BC06
+ ld hl,$191E
+ call crtcpair
+ ld c,lo $BC0C
+ ld hl,$3000
+ call crtcpair
+
+; GENERATE LEFT TILE SET
+ ld hl,graphics_tilemap+32*16
+ ld de,graphics_tilemap+64*16
+ ld bc,32*16
+ ldir
+; PRECALCULATE SPRITE MASK+FLIP TABLES (OVERWRITES BASE TILE SET!)
+ ld hl,maskflip_mask
+ ld de,$AA55
+maskflip1 ld a,l
+ and d
+ jr z,$+3
+ ld a,d
+ ld c,a
+ ld a,l
+ and e
+ jr z,$+3
+ ld a,e
+ or c
+ cpl
+ ld (hl),a
+ inc h
+ ld a,l
+ and d
+ rrca
+ ld c,a
+ ld a,l
+ and e
+ rlca
+ or c
+ ld (hl),a
+ dec h
+ inc l
+ jr nz,maskflip1
+
+; GENERATE FULL TILE MAP
+ ld hl,fulltile
+ ld de,fulltile+80-1
+ ld c,25
+fullfromhalf ld b,40
+fullfromhalf1 ld a,(hl)
+ cp 32
+ jr c,fullfromhalf_
+ cp 96
+ jr nc,fullfromhalf_
+ add 32
+ ld (hl),a
+ xor 32
+fullfromhalf_ ld (de),a
+ inc hl
+ dec de
+ djnz fullfromhalf1
+ ld a,c
+ ld bc,80-40
+ add hl,bc
+ ex de,hl
+ ld bc,80+40
+ add hl,bc
+ ex de,hl
+ ld c,a
+ dec c
+ jr nz,fullfromhalf
+; GENERATE RIGHT TILE SET
+ ld hl,graphics_tilemap+64*16
+ ld de,graphics_tilemap+96*16
+ ld xl,c;,0;=256
+ ld b,hi maskflip_flip
+rightfromleft inc l
+ ld c,(hl)
+ ld a,(bc)
+ ld (de),a
+ dec l
+ inc e
+ ld c,(hl)
+ ld a,(bc)
+ ld (de),a
+ inc l
+ inc de
+ inc hl
+ dec xl
+ jr nz,rightfromleft
+
+; GENERATE 1P TEAM (ALWAYS THE SAME)
+ ld hl,graphics_sprites+4*(12+2+16)+0*120
+ ld de,palette_team0
+ ld bc,graphics_team1
+ call game_generate
+
+ ei
+
+; ========================================================================
+; MENU AND INFO
+; ========================================================================
+
+menu_init ;
+ ld hl,song0
+ ld (int7song),hl
+
+menu_loop0 call nukevram
+
+ ld hl, 0*80+ 0*2
+ call menu_rainbows
+ ld hl, 0*80+37*2
+ call menu_rainbows
+
+ ld de,txt_title
+
+ ld hl, 0*80+ 3*2
+ ld bc, 4*2048+33
+ ld a,$30
+ call shadebox
+ ld bc,$C030
+ call inkpaper_0ff
+ ld hl, 1*80+ 4*2
+ call printstr
+ call inkpaper_8ff
+ call printstr
+
+ ld hl,17*80+ 3*2
+ ld bc, 6*2048+33
+ ld a,$03
+ call shadebox
+ ld bc,$C003
+ call inkpaper_ff0
+ ld hl,18*80+ 4*2
+ call printstr
+ call inkpaper_ff8
+ call printstr
+ call inkpaper_880
+ ld hl,20*80+ 4*2
+ call printstr
+ call inkpaper_8f8
+ call printstr
+
+ ld hl, 6*80+ 3*2
+ ld bc, 9*2048+33
+ ld a,$CC
+ call shadebox
+ ld bc,$CCCC
+ call inkpaper_000
+ ld hl, 7*80+ 4*2
+ call printstr
+ ld hl, 9*80+ 4*2
+ call printstr
+ ld hl,12*80+ 4*2
+ call printstr
+
+ call slowvram;crtcvram;
+
+; ------------------------------------------------------------------------
+
+menu_loop1
+ call timedkey0
+ if 0;HEAVY?
+ jr nc,menu_loop1_
+
+ xor a
+ call wipevram
+ ld a,$C0
+ ld hl,0*2+ 24*80
+ ld bc,40+ 1*2048
+ call fillrect
+
+ ld hl,1*2+ 0*80
+ ld de,txt_infos
+ ld bc,$C000
+ push bc
+ call inkpaper_8ff
+ call menu_info0
+ pop bc
+ push bc
+ call inkpaper_8f8
+ call menu_info0
+ pop bc
+ call inkpaper_ff8
+ call menu_info0
+ call slowvram;crtcvram;
+ call timedkey0
+ jp menu_loop0
+menu_info0 ld bc,80
+ add hl,bc
+menu_info0_ ld a,(de)
+ inc de
+ and a
+ ret z
+ dec de
+ push hl
+ call printstr
+ pop hl
+ ld bc,2*80
+ add hl,bc
+ jr menu_info0_
+ else;!HEAVY
+ jr nc,menu_loop1_
+ ld a,$18;=DEMO!!
+ jr menu_playonce
+ endif;HEAVY.
+
+menu_loop1_ ;
+ cp 66 ; ESCAPE
+ jr z,menu_redefine
+ ld ix,keybd1
+ cp (ix+4) ; P1 FIRE
+ jr z,menu_playfull
+ cp (ix+4+keybd2-keybd1) ; P2 FIRE
+ jr nz,menu_loop1
+ ld a,$3E;=DOUBLE
+menu_playonce ; TWO PLAYERS, ONE MATCH / DEMO
+ call game_init
+ call game_play
+ jp menu_init
+menu_playfull ; ONE PLAYER, NINE MATCHES
+ call game_init
+menu_playfull1 ;
+
+ call nukevram
+ ld bc,$03C0
+ call inkpaper_ff0
+ ld hl,11*80+12*2
+ ld de,txt_level
+ call printstr
+ call crtcvram;slowvram;
+ call timedkey0
+
+ ld a,$30;=SINGLE
+ call game_play
+ jr nc,menu_playfull_
+ ld hl,game_level
+ inc (hl)
+ ld a,(hl)
+ cp "9"+1
+ jr c,menu_playfull1
+ call game_playexit ; "CONGRATULATIONS!"
+menu_playfull_ call game_exit
+ jp menu_init
+
+menu_redefine call flipvram
+
+ ld ix,keybd1
+ ld a,"1"
+ call menu_redefine0
+ ld a,"2"
+ call menu_redefine0
+
+ ld de,txt_title_
+ ld hl,4*2+12*80
+ call printstr ; restore text line
+
+ call flipvram
+ jp menu_loop1
+
+menu_redefine0 push af
+
+ ld hl,4*2+ 12*80
+ ld bc,31+ 2*2048
+ ld a,$CC
+ call fillrect ; erase text line
+
+ pop af
+ ld b,keybd2-keybd1
+ ld de,txt_redefine
+ ld (de),a
+ ld hl,4*2+12*80
+menu_redefine1
+ push bc
+ call printstr
+ push hl
+menu_redefine2 call wait4key
+ cp 66 ; ESCAPE
+ jr z,menu_redefine2
+ cp 27 ; "P"
+ jr z,menu_redefine2
+ ld (ix),a
+ inc ix
+ pop hl
+ pop bc
+ djnz menu_redefine1
+ ret
+
+; ------------------------------------------------------------------------
+
+menu_rainbows ld a,$03
+ call menu_rainbows_
+ ld a,$C3
+ call menu_rainbows_
+ ld a,$0F
+ call menu_rainbows_
+ ld a,$CF
+ call menu_rainbows_
+ ld a,$FC
+ call menu_rainbows_
+ ld a,$3C
+ call menu_rainbows_
+ ld a,$F0
+ call menu_rainbows_
+ ld a,$30
+menu_rainbows_ push hl
+ ld bc,2+ 2*2048
+ call shadebox
+ pop hl
+ ld bc,3*80
+ add hl,bc
+ ret
+
+; ========================================================================
+; THE GAMEPLAY!
+; ========================================================================
+
+FLIGHT_CONST = 3 ; defines ball speed while airborne
+BOUNCE_CONST = 1 ; defines ball speed after a miss
+FASTER_CONST = 2 ; defines players' running speed
+SLOWER_CONST = 0 ; shall we punish dribbling?
+GRABIT_CONST = 2 ; defines players' reach
+
+game_init ld hl,game_level
+ ld (hl),"1"
+ ret
+
+game_play ; A=OPCODE MODE (cfr. player_dual); CF=WIN?
+ ld (game_play_player_dual),a
+; generate rival team graphics and colours
+ ld a,(game_level)
+ sub "0"
+ push af
+ ld bc,120
+ ld hl,graphics_sprites+4*(12+2+16)-120
+ add hl,bc
+ dec a
+ jr nz,$-2
+ pop af
+ add a
+ add a
+ add a
+ add a
+ add lo palette_team0
+ ld e,a
+ adc hi palette_team0
+ sub e
+ ld d,a
+ ld bc,graphics_team2
+ call game_generate
+
+; generate random background
+ ld hl,$7800
+ ld de,$7800+1
+ ld bc,$0800-1
+ ld (hl),c;-1
+ ldir ; invalidate cache
+; adverts
+ ld de,fulltile+4*80+14
+ call game_advert
+ ld de,fulltile+4*80+26
+ call game_advert
+ ld de,fulltile+4*80+42
+ call game_advert
+ ld de,fulltile+4*80+54
+ call game_advert
+; people!
+ ld hl,fulltile+0*80+25
+ call game_people
+ ld hl,fulltile+2*80+15
+ call game_people
+ dec hl
+ dec hl
+ call game_people
+ ld hl,fulltile+0*80+43
+ call game_people
+ ld hl,fulltile+2*80+43
+ call game_people
+ dec hl
+ dec hl
+ call game_people
+
+ ld a,20
+ ld (tile_offset),a
+ ld hl,object_list
+ ld de,$0040
+ ld bc,object_list_-object_list
+ ldir ; SET EVERYTHING TO DEFAULT
+
+ ld hl,song1
+ ld (int7song),hl
+
+ xor a
+ ld (game_timer0),a
+ ld (game_score1),a
+ ld (game_score2),a
+ ld (game_timer1),a
+ ld (game_frames),a
+ ld a,4
+ ld (game_timer2),a
+game_play1 ; the gameplay loop
+
+ ld hl,game_frames
+ ld a,(hl)
+ and a
+ jr z,game_frames_
+ dec a
+ ld (hl),a
+; the audience moves!
+ ld hl,fulltile
+ ld b,0
+game_frames1 ;
+ ld a,(hl)
+ cp 128
+ jr c,$+9
+ cp 192
+ jr nc,$+5
+ xor 32
+ ld (hl),a
+ inc l
+ ld a,(hl)
+ cp 128
+ jr c,$+9
+ cp 192
+ jr nc,$+5
+ xor 32
+ ld (hl),a
+ inc hl
+ djnz game_frames1
+game_frames_ ;
+
+ ld a,(game_timer0)
+ inc a
+ cp 12
+ jr c,game_timer_
+ ld a,(game_timer1)
+ and a
+ jr nz,game_timer1_
+ ld a,(game_timer2)
+ dec a
+ jp m,game_timeout
+ ld (game_timer2),a
+ ld a,60
+game_timer1_ dec a
+ ld (game_timer1),a
+ xor a
+game_timer_ cp 12/2
+ ld (game_timer0),a
+
+; update timer and score
+ ld a,(game_score1)
+ ld hl,fulltile+15
+ call game_play_digits
+ ld a,$00
+game_timer2 = $-1 ; MINUTES
+ inc hl
+ call game_play_digit
+ ld a,0
+game_timer0 = $-1
+ cp 12/2
+ ld a,10
+ adc 0
+ call game_play_digit
+ ld a,$00
+game_timer1 = $-1 ; SECONDS
+ call game_play_digits
+ ld a,(game_score2)
+ ld hl,fulltile+23
+ call game_play_digits
+ ld hl,fulltile+15
+ ld de,fulltile+55
+ ld bc,10
+ ldir
+ ld hl,fulltile+80+15
+ ld de,fulltile+80+55
+ ld c,10
+ ldir
+
+; previous check: which player is nearest to the ball?
+ ld ix,$0040+2*8
+ call game_play_setstrategy
+ ld xl,$0040+4*8
+ call game_play_setstrategy
+
+ ld ix,$0040+2*8 ; baskets never move!
+ ld b,4
+game_play_player ; handle the players' logic (items #2-#5)
+ push bc
+ push ix
+ ld a,xl
+ sub lo ($0040+4*8)
+ add a
+ ld b,4
+ jr c,$+4
+ ld b,4+20 ; SPRITE BASE
+
+; first of all, is the player airborne?
+; while airborne, control is automatic;
+; when hitting the apex of the jump
+; he will catch the ball if is near enough
+; or he will it will shoot it to the basket if owns it.
+
+ ld a,(ix+7) ; VELZ
+ or (ix+3) ; POSZ
+ jr z,game_play_player_ground
+; airborne!
+ call game_play_stick2ground
+ jr nc,game_play_player_midair
+ ld (ix+7),0 ; stop vertical motion
+ ld a,(ix+0)
+ and 4-1
+ add a
+ add a
+ add b
+ ld (ix+0),a
+ or b ; force NZ
+game_play_player_midair jr nz,game_play_player_midair_
+; apex of the jump
+ ld iy,$0040+6*8
+ bit 0,(ix+4) ; PLAYER FLAG: OWNS BALL?
+ jr z,game_play_player_midair1
+; shoot the ball! set target to the basket
+ bit 4,b
+ ld hl,$0040+1*8+1 ; BASKET-R POSX
+ jr z,$+4
+ ld l,$0040+0*8+1 ; BASKET-L POSX
+ ld a,64+12 ; roughly the exact POSZ
+ call game_play_player_shot
+ ld a,4
+ ld (game_play_player_dodge+1),a ; slowdown to prevent stealing the ball too quickly
+; is the shot two or three points worth?
+ set 2,(iy+4) ; succesful shot
+ set 3,(iy+4) ; can be three points
+ push ix
+ dec l
+ dec l
+ push hl
+ pop ix
+ call game_distance
+ pop ix
+ cp 64
+ jr nc,$+6
+ res 3,(iy+4) ; is two points
+ sub 32
+ jr c,game_play_player_basket1 ; close enough to succeed
+ add a
+ jr c,game_play_player_basket0
+ ld c,a
+ call rnd8
+ add c
+ jr c,game_play_player_basket1 ; the farther, the more difficult
+game_play_player_basket0 res 2,(iy+4) ; failed shot
+game_play_player_basket1 ;
+ jr game_play_player_midair_
+game_play_player_midair1 ;
+; is the ball near enough and airborne?
+ ld a,($0040+6*8+3) ; BALL POSZ
+ cp 32
+ jr c,game_play_player_midair_ ; too high or low!
+; catch the airborne ball!
+ call game_distance
+ cp 1<<GRABIT_CONST
+ jr nc,game_play_player_midair_ ; too far!
+ call game_play_player_catch
+game_play_player_midair_ jp game_play_player_
+game_play_player_ground ;
+
+; the player is on the ground,
+; where he can move freely and catch an ownerless ball
+; is he controlled by a human or by the computer?
+; human = right team, primary player and no special flags
+; computer = everything else
+
+ push bc
+ ld iy,$0040+6*8
+ bit 0,(iy+4)
+ jr nz,game_play_player_catch_ ; ball is owned
+ ld a,(iy+3) ; POSZ
+ cp 48
+ jr nc,game_play_player_catch_ ; ball is airborne
+ call game_distance
+ cp 4
+ jr nc,game_play_player_catch_ ; ball is too far
+; ball is free and near enough, catch it
+ call game_play_player_catch
+game_play_player_catch_ ;
+ pop bc
+
+ ld a,0
+game_frames = $-1
+ and a
+ jp nz,game_play_player_wait
+
+; the AI begins here! first it must guess where it wants to go,
+; and that depends on whether it's the primary player or not,
+; and on whether the team is attacking or defending:
+; attack: enemy basket always!; defense: ball (1) or own basket (2)
+
+ ld de,0 ; by default, no motion is done
+ ld h,hi $0040
+ ld yh,hi $0040
+ ld a,xl
+ cp $0040+4*8 ; is it P1?
+game_play_player_dual jr nc,game_play_player_player2 ; $30 = SINGLE, $3E = DOUBLE, $18 = DEMO!!
+ bit 2,(ix+4) ; is the primary player?
+ jp nz,game_play_player_keyboard
+game_play_player_player2 ;
+ ld a,xl
+ sub $0040+2*8
+ rrca
+ cpl ; xor 8
+ and 8
+ add $0040+0*8
+ ld l,a ; target is the enemy basket
+ bit 4,(ix+4)
+ jr nz,game_play_player_machine
+; defense, go for the ball if primary
+ ld l,$0040+6*8 ; target is the ball
+ bit 2,(ix+4) ; primary player catches it
+ jr nz,game_play_player_machine
+ bit 5,(ix+4) ; secondary goes too if the enemy isn't really attacking
+ jr z,game_play_player_machine
+ xor 8
+ ld l,a ; target is our own basket
+; jr game_play_player_machine
+game_play_player_machine ; HL=TARGET
+ push hl
+ pop iy
+
+ ld a,(iy+1)
+ sub (ix+1)
+ jr nc,$+5
+ dec e
+ jr $+7
+ cp 1<<FASTER_CONST
+ jr c,$+3
+ inc e ; automatic VELX
+ ld a,(iy+2)
+ bit 4,(ix+4) ; attacking team...
+ jr z,game_play_player_corner
+ bit 2,(ix+4) ; secondary player...
+ jr nz,game_play_player_corner
+ ld a,(game_timer1)
+ and 4
+ add a
+ add a
+ add a
+ add a
+ add a
+ add 64
+game_play_player_corner ;
+ sub (ix+2)
+ jr nc,$+5
+ dec d
+ jr $+7
+ cp 1<<FASTER_CONST
+ jr c,$+3
+ inc d ; automatic VELY
+
+ bit 2,(ix+4)
+ jp z,game_play_player_machine9 ; secondary player must neither jump or steal
+ bit 0,(ix+4)
+ jr z,game_play_player_machine0 ; player without the ball should do other tasks
+
+; should the AI jump and shoot at the basket?
+ ld a,xl
+ sub $0040+2*8
+ rrca
+ cpl
+ and 8
+ add $0040+0*8
+ ld yl,a ; measure distance to enemy basket
+ call game_distance
+ cp 80
+ jr nc,game_play_player_machine2 ; not near enough
+ ld c,a
+ ld a,(game_level)
+ sub "0"
+ add a
+ add a
+ add a
+ add a
+ sub c
+ jr game_play_player_machine2_ ; the more advanced the more likely
+game_play_player_machine2 ;
+ ld a,xl
+ sub $0040+2*8
+ xor 2*8
+ add $0040+2*8
+ ld yl,a ; one enemy player
+ bit 2,(iy+0)
+ jr nz,$+6
+ xor 8 ; the other enemy player
+ ld yl,a
+ call game_distance
+ ld c,a
+ ld a,(game_level)
+ sub "0"
+ add a
+ add a
+ add a
+ add a
+ sub c
+ jr c,game_play_player_machine2__
+ call rnd8
+ sub -32
+game_play_player_machine2_ jr nc,game_play_player_tryjump
+game_play_player_machine2__ jr game_play_player_machine9
+
+; should the AI steal or catch a ball?
+game_play_player_machine0 ;
+ ld a,($0040+6*8+1) ; ball POSX
+ sub (ix+1)
+ add 1<<GRABIT_CONST
+ cp 2<<GRABIT_CONST
+ jr nc,game_play_player_machine9
+ ld a,($0040+6*8+2) ; ball POSY
+ sub (ix+2)
+ add 1<<GRABIT_CONST
+ cp 2<<GRABIT_CONST
+ jr nc,game_play_player_machine9
+; should the AI steal the ball?
+ bit 5,(ix+4)
+ jr z,game_play_player_machine1 ; don't steal the ball if the enemy doesn't own it
+ ld a,(game_play_player_steal+1)
+ and a
+ jr z,game_play_player_fire ; don't steal during slowdown
+ jr game_play_player_machine1
+game_play_player_machine1 ; should the AI catch a flying ball?
+ ld a,($0040+6*8+3) ; ball POSZ
+ cp 48
+ jr c,game_play_player_machine9
+ ld a,($0040+6*8+4) ; ball FLAG
+ bit 1,a ; is it a ball with target?
+ jr z,game_play_player_machine9
+game_play_player_tryjump ;
+ ld a,xl
+ xor 8
+ ld yl,a
+ ld a,(iy+3) ; teammate POSZ
+ and a
+ jr z,game_play_player_jump ; don't jump if the partner already jumped!
+game_play_player_machine9 ;
+ jp game_play_player_machine_
+
+game_play_player_keyboard ;
+ ld iy,keybd1
+ bit 4,b ; 0 = P1, 1 = P2
+ jr z,$+6
+ ld iy,keybd2
+
+ ld a,(iy+0)
+ call testakey
+ jr nz,$+3
+ dec d
+ ld a,(iy+1)
+ call testakey
+ jr nz,$+3
+ inc d
+ ld a,(iy+2)
+ call testakey
+ jr nz,$+3
+ dec e
+ ld a,(iy+3)
+ call testakey
+ jr nz,$+3
+ inc e
+ ld a,(iy+5)
+ call testakey
+ jr nz,game_play_player_jump_
+game_play_player_jump ld (ix+7),4+1 ; VELZ!
+ ld a,(ix+0)
+ sub b
+ and -4
+ rrca
+ rrca
+ add 16
+ add b
+ ld (ix+0),a
+ jp game_play_player_
+game_play_player_jump_ ;
+ ld a,(iy+4)
+ call testakey
+ jr nz,game_play_player_fire_
+game_play_player_fire ld iy,$0040+6*8 ; IY=KEYBOARD is no longer needed
+ bit 0,(ix+4)
+ jr z,game_play_player_steal
+; pass the ball to the teammate if he's not jumping: he's the target
+ ld h,hi $0040
+ ld a,xl
+ xor 8 ; teammate
+ add 3
+ ld l,a
+ ld a,(hl) ; POSZ
+ and a
+ jr nz,game_play_player_fire_ ; don't pass to airborne players
+ inc l
+ set 3,(hl) ; target waits to get the ball
+ dec l
+ dec l
+ dec l
+ ld a,32
+ call game_play_player_shot
+ set 3,(ix+4) ; player waits to release the ball
+ res 2,(iy+4) ; ball won't score any points
+ jr game_play_player_fire_
+game_play_player_steal ld a,0
+ and a
+ jr nz,game_play_player_steal_
+; try stealing the ball
+ bit 0,(iy+4)
+ jr z,game_play_player_fire_ ; don't steal ball without owner
+ ld a,(iy+3) ; POSZ
+ cp 48
+ jr nc,game_play_player_fire_ ; steal is too high
+ call game_distance
+ cp 1<<GRABIT_CONST
+ jr nc,game_play_player_fire_
+ call game_play_player_catch
+ ld a,6 ; slowdown to prevent too much stealing
+game_play_player_steal_ ;
+game_play_player_fire_ ;
+game_play_player_machine_ ;
+
+ bit 3,(ix+4) ; waiting to get or release the ball?
+ jr z,$+5
+game_play_player_wait ld de,0
+
+ sla e
+ sla d
+ if FASTER_CONST>1
+  sla e
+  sla d
+ endif
+ if FASTER_CONST>2
+  sla e
+  sla d
+ endif
+ if SLOWER_CONST
+ bit 0,(ix+4) ; holding the ball?
+ jr nz,game_play_player_slow ; the ball makes the player slower
+ ld a,e
+ sra e
+ sra e
+ add e
+ ld e,a
+ ld a,d
+ sra d
+ sra d
+ add d
+ ld d,a
+game_play_player_slow ;
+ endif
+
+ ld a,e
+ or d
+ jr z,game_play_player_motion0
+; walking, rather than standing up
+ ld a,e
+ add a
+ jr z,game_play_player_motion
+ sbc a
+ and 4 ; 0=EAST,4=WEST
+ jr game_play_player_motion1
+game_play_player_motion ld a,d
+ add a
+ sbc a
+ and 4
+ add 8 ; 8=SOUTH,12=NORTH
+game_play_player_motion1 ld c,a
+ ld a,(ix+0)
+ inc a
+ and 4-1
+ add b
+ add c
+ jr game_play_player_motion_
+game_play_player_motion0 ld a,(ix+0)
+ and -2;-4
+game_play_player_motion_ ld (ix+0),a
+ call game_play_stick2bounds
+ ld de,253*256+3 ; stricter bound check
+ ld a,(ix+1)
+ cp e
+ jr nc,$+3
+ ld a,e
+ cp d
+ jr c,$+3
+ ld a,d
+ ld (ix+1),a
+
+game_play_player_ ; all player logic is done. now do cosmetic stuff
+ ld iy,$0040+6*8
+ bit 0,(ix+4) ; does the player own the ball?
+ jr z,game_play_player__
+; the player holds the ball
+ ld a,(ix+0) ; SPRITE #
+ ld l,(ix+1) ; POSX
+ ld h,(ix+2) ; POSY
+ sub b
+ ld de,0*256+2 ; EAST
+ sub 4
+ jr c,game_play_player_0
+ ld e,-2 ; WEST
+ sub 4
+ jr c,game_play_player_0
+ ld de,1*256+0 ; SOUTH
+ sub 4
+ jr c,game_play_player_0
+ ld d,-1 ; NORTH
+ sub 4
+ jr c,game_play_player_0
+; jumping is different!
+ ld (iy+1),l
+ ld (iy+2),h
+ ld a,(ix+3) ; POSZ
+ add 48
+ ld (iy+3),a
+ jr game_play_player__
+game_play_player_0 ld a,l
+ add e
+ ld (iy+1),a
+ ld a,h
+ add d
+ ld (iy+2),a
+ ld a,16
+ add 3
+ and 6
+ ld ($-5),a
+ ld c,a
+ add a
+ add c
+ ld (iy+3),a
+game_play_player__ ;
+
+ pop ix
+ ld bc,8
+ add ix,bc
+ pop bc
+ dec b
+ jp nz,game_play_player
+
+ ld hl,game_play_player_steal+1
+ call game_safedecrease
+ ld hl,game_play_player_dodge+1
+ call game_safedecrease
+
+; now handle the ball logic (item #6)
+; first of all, is it in a player's hands?
+ bit 0,(ix+4)
+ jr nz,game_play_ball_midair_;game_play_ball_
+; next, is it in free motion, or flying to a target?
+ bit 1,(ix+4)
+ jr nz,game_play_ball_target
+; ball is moving freely, so handle the gravity here
+ ld e,(ix+5) ; VELX
+ ld d,(ix+6) ; VELY
+ call game_play_stick2bounds
+ call game_play_stick2ground
+ jr nc,game_play_ball_midair
+ xor a
+ sub (ix+7)
+ sub 2
+ jr nc,game_play_ball_midair1
+ xor a
+ inc (ix+7)
+ ld (ix+4),a ; no bounce,
+ ld (ix+5),a ; stop moving
+ jr game_play_ball_midair_
+game_play_ball_midair1 ld (ix+7),a ; ball bounce
+ ld hl,chan0
+ ld (int7chan),hl
+game_play_ball_midair dec (ix+7) ; gravity
+game_play_ball_midair_ jr game_play_ball_
+game_play_ball_target ;
+ call game_totarget
+ jr nc,game_play_ball_
+; the ball hit its target. is it a succesful basket?
+ res 1,(ix+4) ; restore free motion
+ xor a
+ ld (ix+5),a
+ ld (ix+6),a
+ ld (ix+7),a ; kill all velocity
+ bit 2,(ix+4)
+ jr z,game_play_ball_target0
+; basket! two or three points?
+ ld hl,game_score1
+ ld a,(ix+1)
+ add a
+ jr c,$+5 ; PLAYER1 scores on the right basket
+ ld hl,game_score2
+ ld a,2
+ bit 3,(ix+4)
+ jr z,$+3
+ inc a
+ add (hl)
+ cp 99
+ jr c,$+4
+ ld a,99 ; avoid overflow!
+ ld (hl),a
+ ld hl,chan2
+ call game_play_waitchan
+ jr game_play_ball_
+game_play_ball_target0 ; miss target (or is a pass)
+ bit 7,(ix+1)
+ ld a,1<<BOUNCE_CONST
+ jr z,$+4
+ neg
+ ld (ix+5),a ; VELX
+ call rnd8
+ add a
+ jr nc,game_play_ball_target0_
+ add a
+ sbc a
+ and 2<<BOUNCE_CONST
+ sub 1<<(BOUNCE_CONST)
+ ld (ix+6),a ; VELY
+game_play_ball_target0_ ;
+ ld (ix+7),2 ; bounce just a little
+; jr game_play_ball_
+game_play_ball_ ; ball logic is done
+ ld a,(game_frames)
+ dec a
+ jr nz,game_play_waitover
+; now we must move all the players to their default locations
+ ;xor a
+ ld (ix+3),a ; ball on the floor
+ ld (ix+4),a ; no flags at all, ball is free
+ ld hl,$0040+2*8
+ ld b,4*8
+ ld (hl),a
+ inc l ; reset all player variables
+ djnz $-2
+ ld a,(ix+1)
+ ld bc,28*256+4 ; PLAYER sprites
+ ld ix,$0040+2*8 ; PLAYER-L players
+ ld iy,$0040+4*8 ; PLAYER-R players
+ cp 1<<7
+ jr c,$+13 ; on right field, swap players!
+ ld bc,4*256+28
+ push ix
+ push iy
+ pop ix
+ pop iy
+ ld (ix+0*8+0),c
+ ld (ix+1*8+0),c
+ ld (iy+0*8+0),b
+ ld (iy+1*8+0),b
+ ld (ix+0*8+1),a ; PLAYER-L #1 POSX
+ xor 32
+ ld (ix+1*8+1),a ; PLAYER-L #2 POSX
+ ld (iy+0*8+1),a ; PLAYER-R #1 POSX
+ ld (iy+1*8+1),a ; PLAYER-R #2 POSX
+ ld a,128
+ ld (ix+2),a
+ ld (ix+0*8+2),a ; PLAYER-L #1 POSY
+ ld (ix+1*8+2),a ; PLAYER-L #2 POSY
+ sub 64
+ ld (iy+0*8+2),a ; PLAYER-R #1 POSY
+ add 64*2
+ ld (iy+1*8+2),a ; PLAYER-R #2 POSY
+game_play_waitover
+
+; all logic is done, let's redraw everything!
+; first of all, ensure that the ball is within the screen
+ ld bc,127*256+0
+ ld a,(tile_offset) ; 0/20/40
+ cp 10
+ jr c,game_play_camera
+ ld bc,191*256+64
+ cp 30
+ jr c,game_play_camera
+ ld bc,255*256+128
+game_play_camera ;
+ ld a,($0040+6*8+1) ; POSX
+ cp c
+ jr c,game_play_camera0
+ cp b
+ jr c,game_play_camera_
+ jr z,game_play_camera_
+ ld a,40
+ db $06 ; DUMMY "LD B,XX"
+game_play_camera0 xor a
+ ld (tile_offset),a
+game_play_camera_ ;
+; now we can redraw the background proper
+ call tile_screen
+; cheerleaders always go first, they're in the background
+ ld hl,graphics_team2+0
+ ld de,14*256+24*2
+ ld c,128-64
+ call game_play_cheerlogic
+ ld bc,48*256+8
+ push bc
+ call sprite_drawfromoffset
+ ld hl,graphics_team1+0
+ ld de,14*256+52*2
+ ld c,128+64
+ call game_play_cheerlogic
+ pop bc
+ call sprite_drawfromoffset
+
+; sort all the other eight sprites
+game_play1_sort0 ld ix,object_sort+2 ; shadow is always drawn first!
+ ld bc,6*256+1
+game_play1_sort1 ;
+ ld e,(ix+2)
+ ld d,(ix+3)
+ ld l,(ix+0)
+ ld h,(ix+1)
+ inc e
+ inc e
+ inc l
+ inc l
+ ld a,(de)
+ cp (hl)
+ jr c,game_play1_sort2
+ jr nz,game_play1_sort_
+ inc e
+ inc l
+ ld a,(de)
+ cp (hl)
+ dec e
+ dec l
+ jr nc,game_play1_sort_
+game_play1_sort2 ;
+ inc c
+ dec e
+ dec e
+ dec l
+ dec l
+ ld (ix+0),e
+ ld (ix+1),d
+ ld (ix+2),l
+ ld (ix+3),h
+game_play1_sort_ ;
+ inc ix
+ inc ix
+ djnz game_play1_sort1
+ dec c
+ jr nz,game_play1_sort0
+
+ ld hl,($0040+6*8+1) ; get ball POSX+POSY
+ ld ($0040+7*8+1),hl ; set shadow POSX+POSY
+
+ ld hl,object_sort
+ ld b,8
+game_play1_draw ;
+ push bc
+ ld e,(hl)
+ inc hl
+ ld d,(hl)
+ inc hl
+ push hl
+ ld xl,e
+ ld xh,d
+ ld a,(ix+0) ; SPRITE #
+ add a
+ add a
+ add lo sprite_list
+ ld l,a
+ adc hi sprite_list
+ sub l
+ ld h,a
+ ld e,(hl) ; LO ^BYTES
+ inc hl
+ ld d,(hl) ; HI ^BYTES
+ inc hl
+ ld c,(hl) ; SPR_LENX/2
+ inc hl
+ ld b,(hl) ; SPR_LENY
+ ex de,hl
+ ld a,(ix+2) ; POSY
+ sub (ix+3) ; POSZ
+ sub b
+; transform logical POSY into 2D
+; i.e. (128,128) must become (80,128)
+ ld d,a ; SPR_POSY
+; transform logical POSX into 2D
+ push bc
+ push hl
+; adjust fake perspective:
+; 2D_POS=(LOGIC_POS-LOGIC_ORIGIN)*2D_LEN/LOGIC_LEN+2D_ORIGIN
+; where 2D_LEN=0-96..0-160 depending on POSY (64..192):
+; and so does 2D_ORIGIN=0-64..0-0
+ ld a,(ix+2)
+ sub 64
+ and a
+ rra
+ add 96
+ ld l,a
+ ld h,0 ; LENX
+ ld a,(ix+1) ; POSX
+ call calc_multiply
+ ld a,h
+ pop hl
+ pop bc
+ ld e,a
+ ld a,192
+ sub (ix+2)
+ rra
+ rra
+ and 64-1
+ add e
+ sub c
+ ld e,a ; SPR_POSX
+ ld a,c
+ add a
+ ld c,a ; SPR_LENX
+ call sprite_drawfromoffset
+ pop hl
+ pop bc
+ djnz game_play1_draw
+
+ call haltreadpollkeys
+ ld a,2 ; 12.5 Hz
+ call frame
+ call crtcvram
+
+ call testhold
+ jr nz,game_paused
+; pause mode: wait until P is hit again
+ call haltreadpollkeys
+ call testhold
+ jr z,$-6
+ call haltreadpollkeys
+ call testhold
+ jr nz,$-6
+ call haltreadpollkeys
+ call testhold
+ jr z,$-6
+game_paused ;
+
+ call testquit
+ jp nz,game_play1
+
+ call haltreadpollkeys
+ jr z,$-3
+ ret
+
+game_timeout ;
+ ld hl,chan1
+ ld (int7chan),hl
+ ld a,50
+ call frame
+
+ ld a,0
+game_score2 = $-1
+ cp 0
+game_score1 = $-1
+
+ ret
+
+game_play_cheerlogic ;
+; ld a,(game_play_player_dodge+1)
+; ld b,a
+ ld a,(game_frames)
+; add b
+ rrca
+ jr nc,game_play_cheerlogic_
+ ld a,c
+ ld bc,8*48
+ add hl,bc
+ ld c,a
+game_play_cheerlogic_ ;
+ ld a,($0040+6*8+1)
+ cp c
+ ret nc
+ inc l
+ ret
+
+game_safedecrease ld a,(hl)
+ and a
+ ret z
+ dec a
+ ld (hl),a
+ ret
+
+game_play_player_shot ; A=TARGET POSZ,HL=^TARGET POSX,IX=^PLAYER,IY=^BALL
+ ld (iy+3),a ; POSZ
+ ld a,(hl)
+ ld (iy+5),a ; TARGETX
+ inc l
+ ld a,(hl)
+ ld (iy+6),a ; TARGETY
+ res 0,(ix+4) ; player no longer owns the ball
+ res 0,(iy+4) ; ball is no longer owned
+ set 1,(iy+4) ; ball must reach a target
+ ret
+
+game_play_player_catch ; IX=^PLAYER,IY=^BALL; -
+ ld a,(game_frames)
+ and a
+ ret nz
+ ld a,(game_play_player_dodge+1)
+ and a
+ ret nz
+game_play_player_dodge ld a,0
+ and a
+ ret nz
+; other players lose the ball, and those waiting to pass a ball wake up
+ push ix
+ ld ix,$0040+2*8
+ res 0,(ix+0*8+4)
+ res 0,(ix+1*8+4)
+ res 0,(ix+2*8+4)
+ res 0,(ix+3*8+4) ; players no longer own the ball
+ res 3,(ix+0*8+4)
+ res 3,(ix+1*8+4)
+ res 3,(ix+2*8+4)
+ res 3,(ix+3*8+4) ; players no longer wait for the ball
+ pop ix
+ set 0,(ix+4) ; player owns the ball
+ set 0,(iy+4) ; ball is owned
+ ret
+game_play_setstrategy ;
+; does we hold the ball?
+ res 4,(ix+4)
+ res 4,(ix+4+8)
+ bit 0,(ix+4)
+ jr nz,game_play_setstrategy1
+ bit 0,(ix+4+8)
+ jr z,game_play_setstrategy0
+game_play_setstrategy1 ;
+ set 4,(ix+4)
+ set 4,(ix+4+8)
+game_play_setstrategy0 ;
+; does the enemy hold the ball?
+ ld a,xl
+ sub $0040+2*8
+ xor 2*8
+ add $0040+2*8
+ ld yl,a
+ ld yh,hi $0040
+ res 5,(ix+4)
+ res 5,(ix+4+8)
+ bit 0,(iy+4)
+ jr nz,game_play_setstrategy3
+ bit 0,(iy+4+8)
+ jr z,game_play_setstrategy2
+game_play_setstrategy3 ;
+ set 5,(ix+4)
+ set 5,(ix+4+8)
+game_play_setstrategy2 ;
+; which player is the nearest to the ball?
+ res 2,(ix+4)
+ res 2,(ix+4+8)
+ bit 0,(ix+4)
+ jr nz,game_play_setstrategy8
+ bit 0,(ix+4+8)
+ jr nz,game_play_setstrategy9
+ ld yl,$0040+6*8 ; distance to the ball
+ call game_distance
+ push af
+ push ix
+ ld a,xl
+ xor 8
+ ld xl,a
+ call game_distance
+ ld c,a
+ pop ix
+ pop af
+ cp c
+ jr nc,game_play_setstrategy9
+game_play_setstrategy8 set 2,(ix+4) ; current player is primary
+ ret
+game_play_setstrategy9 set 2,(ix+4+8) ; teammate is primary
+ ret
+
+game_playexit ;
+ call nukevram
+ ld hl,song2
+ ld (int7song),hl
+ ld hl,graphics_congrats
+ ld de,56*256+40-7
+ ld bc,48*256+14
+ call sprite_blit
+ call haltreadpollkeys
+ jr z,$-3
+ call slowvram;crtcvram;
+ call flipvram
+game_playexit_ ld a,0 ; simple flashing gradient effect
+ dec a
+ ld (game_playexit_+1),a
+ and 7
+ ld bc,$30C0
+ jr z,game_playexit0
+ dec a
+ jr z,game_playexit1
+ dec a
+ jr z,game_playexit2
+ dec a
+ jr z,game_playexit3
+ dec a
+ ld bc,$03C0
+ jr z,game_playexit4
+ dec a
+ jr z,game_playexit5
+ dec a
+ jr z,game_playexit6
+game_playexit7 call inkpaper_ff8
+ jr game_playexit8
+game_playexit6 call inkpaper_ff0
+ jr game_playexit8
+game_playexit5 call inkpaper_f80
+ jr game_playexit8
+game_playexit4 call inkpaper_f00
+ jr game_playexit8
+game_playexit3 call inkpaper_00f
+ jr game_playexit8
+game_playexit2 call inkpaper_08f
+ jr game_playexit8
+game_playexit1 call inkpaper_0ff
+ jr game_playexit8
+game_playexit0 call inkpaper_8ff
+game_playexit8 ld hl,15*80+ 0*2
+ ld de,txt_congrats
+ call printstr
+ ld a,(game_playexit_+1)
+ and 31
+ jr z,game_playexitb
+ dec a
+ jr z,game_playexitc
+ dec a
+ jr z,game_playexitd
+ dec a
+ jr z,game_playexitc
+ dec a
+ jr z,game_playexitb
+ dec a
+ jr z,game_playexitc
+ dec a
+ jr z,game_playexitd
+ dec a
+ jr z,game_playexitc
+ dec a
+ jr z,game_playexitb
+ ld hl,graphics_congrats_+0*4*12
+ jr game_playexita
+game_playexitb ld hl,graphics_congrats_+1*4*12
+ jr game_playexita
+game_playexitc ld hl,graphics_congrats_+2*4*12
+ jr game_playexita
+game_playexitd ld hl,graphics_congrats_+3*4*12
+ jr game_playexita
+game_playexita ld de,48*256+40-5
+ ld bc,12*256+4
+ call sprite_blit
+
+ ld a,2
+ call frame
+ call haltreadpollkeys
+ jp nz,game_playexit_
+
+ jp flipvram
+
+game_exit ;
+ call stopsong
+ call nukevram
+ ld bc,$0CC0
+ call inkpaper_fff
+ ld hl,11*80+15*2
+ ld de,txt_gameover
+ call printstr
+ call crtcvram;slowvram;
+ jp wait4key
+
+; ========================================================================
+; AUX. ROUTINES
+; ========================================================================
+
+rnd8 ld a,0
+ sub 83
+ sbc c
+ sbc e
+ sbc l
+ sbc xl
+ sbc yl
+ ld (rnd8+1),a
+ ret
+
+game_advert ; DE=^TILEMAP; !
+ call rnd8
+ and 3*4 ; x4
+ ld c,a ; x4
+ add a ; x8
+ add a ; x16
+ add a ; x32
+ add c ; x36
+ add lo game_advertdata
+ ld l,a
+ adc hi game_advertdata
+ sub l
+ ld h,a
+ ld a,3
+game_advert1 ;
+ ld bc,12
+ ldir
+ ex de,hl
+ ld bc,80-12
+ add hl,bc
+ ex de,hl
+ dec a
+ jr nz,game_advert1
+ ret
+game_people ; HL=^TILEMAP; !
+ ld b,6
+game_people1 ;
+ call rnd8
+ and 7*2
+ add 128
+ ld (hl),a
+ inc a
+ inc hl
+ ld (hl),a
+ add 16-1
+ ld de,80-1
+ add hl,de
+ ld (hl),a
+ inc a
+ inc hl
+ ld (hl),a
+ ld de,1-80
+ add hl,de
+ djnz game_people1
+ ret
+
+bytexlat macro
+ ld a,(bc)
+ ld l,a
+ ld a,(de)
+ and (hl)
+ or l
+ ld (de),a
+ endm
+game_generate ; generate the entire team: HL=HEADS,DE=COLOURS,BC=TARGET; !
+ ld (game_generate_headb+1),hl
+ ld (game_generate_headf+1),hl
+ ld (game_generate_color+1),de
+ ld h,b
+ ld l,c
+ ld d,h
+ ld e,l
+ inc de
+ ld bc,graphics_teamgfx_-graphics_teamgfx-1
+ push hl
+ ld (hl),0
+ ldir
+; draw heads in background
+game_generate_headb ld bc,$2121
+ ld a,4*10
+ add c
+ ld c,a
+ adc b
+ sub c
+ ld b,a ; HEAD LOOKS BACK
+ pop hl
+ ld de,2*8*48+1*56*6+3*6+1
+ call game_generate_head
+ ld de,2*8*48+3*56*6+2*6*48+0*6+1
+ call game_generate_head
+ ld de,2*8*48+3*56*6+3*6*48+1*6+1
+ call game_generate_head
+ ld a,4*10
+ add c
+ ld c,a
+ adc b
+ sub c
+ ld b,a ; HEAD LOOKS RIGHT
+ ld de,2*8*48+2*56*6+3*6+2
+ call game_generate_head
+; draw bodies between them
+ ex de,hl
+ ld h,hi maskflip_mask
+ ld bc,graphics_teamgfx
+ ld ix,graphics_teamgfx_-graphics_teamgfx
+ push de
+game_generate_xlat ;
+ dec ix
+ bytexlat
+ inc c
+ inc e
+ dec xl
+ if 0
+ bytexlat
+ inc c
+ inc e
+ dec xl
+ bytexlat
+ inc c
+ inc e
+ dec xl
+ endif
+ bytexlat
+ inc bc
+ inc de
+ ld a,xl
+ or xh
+ jr nz,game_generate_xlat
+; draw heads in foreground
+game_generate_headf ld bc,$2121
+; HEAD LOOKS FRONT
+ pop hl
+ ld de,2*8*48+0*56*6+3*6+1
+ call game_generate_head
+ ld de,2*8*48+3*56*6+0*6*48+0*6+1
+ call game_generate_head
+ ld de,2*8*48+3*56*6+1*6*48+1*6+1
+ call game_generate_head
+ ld a,8*10
+ add c
+ ld c,a
+ adc b
+ sub c
+ ld b,a ; HEAD LOOKS RIGHT
+ ld de,2*8*48+3*56*6+4*6*48+0*6+2
+ call game_generate_head
+ ld de,2*8*48+3*56*6+5*6*48+1*6+2
+ call game_generate_head
+ ld de,2*8*48+3*56*6+6*6*48+0*6+2
+ call game_generate_head
+ ld de,2*8*48+3*56*6+7*6*48+1*6+2
+ call game_generate_head
+
+; set colours for the team
+ ld bc,graphics_teamgfx_-graphics_teamgfx
+game_generate_color ld de,$1111
+ ;call game_decorate
+game_decorate ; HL=^SPRITES,DE,=^PALETTE,BC=LENGTH(x4); ABCDEHLYH!
+ push hl
+ push bc
+ ld bc,$0100 ; XLAT BYTES
+game_decorate1 ;
+ ld a,c
+ call game_decoratez
+ ld yh,a
+ ld a,c
+ rrca
+ call game_decoratez
+ add a
+ or yh
+ ld (bc),a
+ inc c
+ jr nz,game_decorate1
+ pop bc
+ pop hl
+ ld d,hi $0100 ; XLAT BYTES
+game_decorate_ ; HL=^SPRITES,DE,=^PALETTE,BC=LENGTH(x4)
+ ld e,(hl)
+ ld a,(de)
+ ld (hl),a
+ inc l
+ dec bc
+ if 0
+ ld e,(hl)
+ ld a,(de)
+ ld (hl),a
+ inc l
+ dec c
+ ld e,(hl)
+ ld a,(de)
+ ld (hl),a
+ inc l
+ dec c
+ endif
+ ld e,(hl)
+ ld a,(de)
+ ld (hl),a
+ inc hl
+ dec c
+ ld a,c
+ or b
+ jr nz,game_decorate_
+ ret
+
+game_decoratez ; calculate palette index from ink bits
+ and $55
+ jr z,game_decoratez_
+ ld h,15
+ rrca
+ jr c,$+4
+ res 3,h
+ rrca
+ rrca
+ jr c,$+4
+ res 1,h
+ rrca
+ rrca
+ jr c,$+4
+ res 2,h
+ rrca
+ rrca
+ jr c,$+4
+ res 0,h
+ ld a,h
+game_decoratez_ add e
+ ld l,a
+ adc d
+ sub l
+ ld h,a
+ ld a,(hl)
+ ret
+
+game_generate_head ; HL=^BASE,DE=OFFSET,BC=^HEAD; +++DE,AF,IY!
+ push bc
+ push hl
+ ld yh,10
+ add hl,de
+ ex de,hl
+ ld h,hi maskflip_mask
+game_generate_heady ;
+ ld yl,4
+game_generate_headx ;
+ ld a,(bc)
+ inc bc
+ ld l,a
+ ld a,(de)
+ and (hl)
+ or l
+ ld (de),a
+ inc de
+ dec yl
+ jr nz,game_generate_headx
+ inc de
+ inc de
+ dec yh
+ jr nz,game_generate_heady
+ pop hl
+ pop bc
+ ret
+
+game_play_digits ; A=DECIMAL 0..99,HL=^TARGET; A!,+++HL
+ push bc
+ ld b,0
+ cp 10
+ jr c,$+7
+ inc b
+ sub 10
+ jr $-7
+ push af
+ ld a,b
+ call game_play_digit
+ pop af
+ pop bc
+game_play_digit ; A=DIGIT 0..9,HL=^TARGET; ++HL
+ push bc
+ add a
+ add lo game_scoredigits
+ ld c,a
+ adc hi game_scoredigits
+ sub c
+ ld b,a
+ ld a,(bc)
+ ld (hl),a
+ inc bc
+ ld a,(bc)
+ ld bc,80
+ add hl,bc
+ ld (hl),a
+ ld bc,1-80
+ add hl,bc
+ pop bc
+ ret
+
+game_play_stick2bounds ; IX=^OBJECT,DE=VELY:VELX; AF!
+ ld a,e
+ add a
+ ld a,e
+ jr c,game_play_stick2bounds_x
+ add (ix+1)
+ jr nc,game_play_stick2bounds_x_
+ sbc a
+ jr game_play_stick2bounds_x_
+game_play_stick2bounds_x add (ix+1)
+ jr c,game_play_stick2bounds_x_
+ xor a
+game_play_stick2bounds_x_ ld (ix+1),a
+ ld a,(ix+2)
+ add d
+ cp 64
+ jr nc,$+4
+ ld a,64
+ cp 192
+ jr c,$+4
+ ld a,192
+ ld (ix+2),a
+ ret
+game_play_stick2ground ; IX=^OBJECT; A!,CF=HIT GROUND?,ZF=JUMP APEX?
+ ld a,(ix+7)
+ add a
+ add (ix+3)
+ ld (ix+3),a
+ dec a
+ add a
+ dec (ix+7) ; gravity, ZF=1 on jump apex
+ ret nc ; CF=0 on midair
+ ld (ix+3),0
+; CF=1 on landing
+ ret
+
+game_distance ; IX=^ITEM1,IY=^ITEM2; A=((P1X-P2X)^2+(P1Y-P2Y)^2)^(1/2),HL!
+ push bc
+ push de
+ ld a,(ix+1)
+ sub (iy+1)
+ jr nc,$+4
+ neg ; fix sign of P1X-P2X
+ sra a ; lower precision, but tolerates overflows
+ call calc_square
+ ex de,hl
+ ; DE=(P1X-P2X)^2
+ ld a,(ix+2)
+ sub (iy+2)
+ jr nc,$+4
+ neg ; fix sign of P1Y-P2Y
+ sra a ; lower precision, but tolerates overflows
+ call calc_square
+; HL=(P1Y-P2Y)^2
+ add hl,de
+; square root of HL: cfr. http://map.grauw.nl/articles/mult_div_shifts.php for details
+ ld de,64
+ ld a,l
+ ld l,h
+ ld h,d
+ ;or a; RESET CF, but ADD HL,DE already did it
+ ld b,8
+game_distance3 sbc hl,de
+ jr nc,$+3
+ add hl,de
+ ccf
+ rl d
+ add a
+ adc hl,hl
+ add a
+ adc hl,hl
+ djnz game_distance3
+ ld a,d
+ pop de
+ pop bc
+ add a ; lower precision, but tolerates overflows
+ ret
+
+game_totarget ; IX=^BALL (-,POSX,POSY,-,-,TARGETX,TARGETY,-); ABCDEHL!,CF=HIT TARGET?
+; the general idea is that pos+=(target-pos)/(distance(pos,target)/speed)
+ push iy
+ push ix
+ pop iy
+ ld bc,4 ; IX+4 => IY+0
+ add iy,bc
+ call game_distance
+ cp 1+(1<<FLIGHT_CONST) ; the speed
+ jr nc,game_totarget0
+; target hit: CF=1
+ ld a,(ix+5)
+ ld (ix+1),a
+ ld a,(ix+6)
+ ld (ix+2),a
+ jr game_totarget_
+game_totarget0 ; far enough to require more algebra
+ and -(1<<FLIGHT_CONST) ; distance/=speed
+ rrca
+ if FLIGHT_CONST>1
+  rrca
+ endif
+ if FLIGHT_CONST>2
+  rrca
+ endif
+ push af
+ ld h,a
+ ld a,(ix+5)
+ sub (ix+1)
+ push af
+ jr nc,$+4
+ neg ; save sign
+ ld l,a
+ ld a,h
+ ld h,0
+ call calc_division
+ pop af
+ ld a,l
+ jr nc,$+4
+ neg ; restore sign
+ add (ix+1)
+ ld (ix+1),a
+
+ pop af
+ ld h,a
+ ld a,(ix+6)
+ sub (ix+2)
+ push af
+ jr nc,$+4
+ neg ; save sign
+ ld l,a
+ ld a,h
+ ld h,0
+ call calc_division
+ pop af
+ ld a,l
+ jr nc,$+4
+ neg ; restore sign
+ add (ix+2)
+ ld (ix+2),a
+ and a ; still moving: CF=0
+
+game_totarget_ pop iy
+ ret
+
+; classical left-shifting 16-bit multiply and division
+calc_square ; A=VAR; AHL=VAR*VAR,BC=VAR,F!
+ ld l,a
+ ld h,0
+calc_multiply ; HL=MUL1(<512),A=MUL2; AHL=MUL1*MUL2,BC=MUL1,F!
+ ld b,h
+ ld c,l
+ ld h,a
+ xor a
+ ld l,a
+ inc a
+calc_multiply_ add hl,hl
+ jr nc,$+3
+ add hl,bc
+ adc a
+ jr nc,calc_multiply_
+ ret
+calc_division ; HL=DIV1,A=DIV2; B=0,C=DIV2,HL=DIV1/DIV2,A=DIV1%DIV2
+ ld c,a
+ xor a
+ ld b,16
+calc_division_ add hl,hl
+ adc a
+ cp c
+ jr c,$+4
+ sub c
+ inc hl
+ djnz calc_division_
+ ret
+
+game_play_waitchan ; play a sound (HL), then wait for almost a second
+ ld (int7chan),hl
+ ld a,24 ; must be even!
+ ld (game_frames),a
+ ret
+
+; ========================================================================
+; INTERFACE+TXT
+; ========================================================================
+
+shadebox ; HL=^VRAM(80x200),BC=LENY(200):LENX(40),A=PAPER; !
+; draw main box
+ push de
+ push hl
+ push bc
+ call fillrect
+ and $55*2
+ or $80/2
+; draw bottom edge
+ pop bc
+ push bc
+ ld b,8
+ inc l
+ inc hl
+ dec c
+ call fillrect
+; draw right edge
+ pop bc
+ ld hl,80
+ ld d,b
+ ld b,h
+ add hl,bc
+ add hl,bc
+ ld b,d
+ ld c,1
+ pop de
+ add hl,de
+ pop de
+fillrect ; HL=^VRAM(80x200),BC=LENY(200):LENX(40),A=PAPER; !
+ push de
+ ld e,a
+ ld a,(softvram+2)
+ or h
+ ld h,a
+ ld a,e
+fillrect1 push bc
+ ld d,h
+ ld e,l
+ ld (de),a
+ inc e
+ ld (de),a
+ inc de
+ dec c
+ jr nz,$-5
+ ld c,a
+ ld de,$0800
+ add hl,de
+ ld a,h
+ and $38
+ jr nz,$+6
+ ld de,80-$4000
+ add hl,de
+ ld b,hi maskflip_flip
+ ld a,(bc)
+ pop bc
+ djnz fillrect1
+ pop de
+ ret
+
+inkpaper_fff ; WHITE
+ push hl
+ push de
+ ld de,$CC0C
+ jr inkpaper_fff_
+inkpaper_000 ; BLACK
+ push hl
+ push de
+ ld hl,$C0C0
+ ld de,$C00C
+ jr inkpaper_xxx
+inkpaper_8ff ; PASTEL CYAN
+ push hl
+ push de
+ ld de,$FC3C
+ jr inkpaper_fff_
+inkpaper_00f ; BLUE
+ push hl
+ push de
+ ld de,$F030
+ ld hl,$3CF0
+ jr inkpaper_xxx
+inkpaper_08f ; SKY BLUE
+ push hl
+ push de
+ ld de,$F030
+ ld hl,$FC3C
+ jr inkpaper_xxx
+inkpaper_0ff ; CYAN
+ push hl
+ push de
+ ld de,$3C30
+inkpaper_0f8_ ld hl,$CCFC
+ jr inkpaper_xxx
+inkpaper_ff8 ; PASTEL YELLOW
+ push hl
+ push de
+ ld de,$CF0F
+inkpaper_fff_ ld hl,$CCCC
+ jr inkpaper_xxx
+inkpaper_f00 ; RED
+ push hl
+ push de
+ ld de,$C303
+ ld hl,$0FC3
+ jr inkpaper_xxx
+inkpaper_f80 ; ORANGE
+ push hl
+ push de
+ ld de,$C303
+ ld hl,$CF0F
+ jr inkpaper_xxx
+inkpaper_ff0 ; YELLOW
+ push hl
+ push de
+ ld de,$0F03
+inkpaper_8f0_ ld hl,$CCCF
+inkpaper_xxx call inkpaper
+ pop de
+ pop hl
+ ret
+inkpaper_880 ; RED GREEN
+ push hl
+ push de
+ ld de,$3F03
+ jr inkpaper_880_
+inkpaper_088 ; BLUE GREEN
+ push hl
+ push de
+ ld de,$3F30
+inkpaper_880_ ld hl,$CCFF
+ jr inkpaper_xxx
+inkpaper_8f8 ; PASTEL GREEN
+ push hl
+ push de
+ ld de,$FF3F
+ jr inkpaper_fff_
+inkpaper_8f0 ; WARM GREEN
+ push hl
+ push de
+ ld de,$FF3F
+ jr inkpaper_8f0_
+inkpaper_0f8 ; COLD GREEN
+ push hl
+ push de
+ ld de,$FF3F
+ jr inkpaper_0f8_
+inkpaper_808 ; MAGENTA
+ push hl
+ push de
+ ld de,$3300
+ ld hl,$CCF3
+ jr inkpaper_xxx
+
+inkpaper ; HLDEBC=BRIGHT..DARK,SHADOW,PAPER; AHLIX!
+ push hl
+ pop ix
+ ld hl,$0100 ; CHAR BYTES
+inkpaper1 ;
+ ld a,l
+ and $55
+ call inkpaper_
+ and $55
+ ld (hl),a
+ ld a,l
+ rrca
+ and $55
+ call inkpaper_
+ and $55
+ rlca
+ or (hl)
+ ld (hl),a
+ ld a,4 ;
+ add l
+ ld l,a
+ jr nz,inkpaper1
+ ret
+inkpaper_ jr nz,inkpaper_1
+ ld a,c
+ ret
+inkpaper_1 cp $40
+ jr c,inkpaper10
+inkpaper11 cp $50
+ ld a,xh
+ ret c
+ ld a,xl
+ ret nz
+ ld a,e
+ ret
+inkpaper10 cp $14
+ ld a,b
+ ret c
+ ld a,d
+ ret
+
+printstr ; HL=^VRAM(40x24),DE=^ASCIZ; !
+ push bc
+ res 6,h
+ ld a,(softvram+2)
+ or h
+ ld h,a
+printstr1 ld a,(de)
+ inc de
+ cp " "
+ jr c,printstr_
+ push de
+ sub "0"
+ jr nc,printstr2
+ ld a,($0100+$00) ; CHAR BYTES: SPACE
+ call printnul
+ call printnul
+ ex de,hl
+ jr printstr3
+printstr2 ; CHARACTER
+ ex de,hl
+ add a ; x2
+ add a ; x4
+ ld l,a
+ ld h,0
+ add hl,hl ; x8
+ add hl,hl ; x16
+ add hl,hl ; x32
+ ld bc,graphics_charmap
+ add hl,bc
+ call printchr1
+ call printchr1
+printstr3 ld hl,-80-80
+ add hl,de
+ pop de
+ inc l
+ inc hl
+ jr printstr1
+printstr_ pop bc
+ ret
+
+printnul ld c,a
+printnul1 ;
+ ld (hl),c
+ inc l
+ ld (hl),c
+ set 3,h
+ ld (hl),c
+ dec l
+ ld (hl),c
+ ld a,h
+ add 8
+ ld h,a
+ and $38
+ jr nz,printnul1
+ ld a,c
+ ld bc,80-$4000
+ add hl,bc
+ ret
+
+printchr1 ld b,hi $0100 ; CHAR BYTES
+printchr2 ;
+ ld c,(hl)
+ inc l
+ ld a,(bc)
+ ld (de),a
+ inc e
+ ld c,(hl)
+ inc l
+ ld a,(bc)
+ ld (de),a
+ dec e
+ set 3,d
+ ld c,(hl)
+ inc l
+ ld a,(bc)
+ ld (de),a
+ inc e
+ ld c,(hl)
+ inc l
+ ld a,(bc)
+ ld (de),a
+ dec e
+ ld a,d
+ add 8
+ ld d,a
+ and $38
+ jr nz,printchr2
+ ex de,hl
+ ld bc,80-$4000
+ add hl,bc
+ ex de,hl
+ ret
+
+; ========================================================================
+; TILE RENDERER
+; ========================================================================
+
+tileblit macro vvv ; A=TILE,HL=^CACHE,DE=^VRAM; AF!HL!SP!
+ local tileblit_,tileblit1
+ ld (hl),a
+ cp 16
+ jr nc,tileblit1
+ add lo solidcolours
+ ld l,a
+ ld h,hi solidcolours ; short palette for solid colours
+ ld a,(hl)
+ ld (de),a
+ inc e
+ ld (de),a
+ set 3,d
+ ld (de),a
+ dec e
+ ld (de),a
+ set 4,d
+ ld (de),a
+ inc e
+ ld (de),a
+ res 3,d
+ ld (de),a
+ dec e
+ ld (de),a
+ set 5,d
+ ld (de),a
+ inc e
+ ld (de),a
+ set 3,d
+ ld (de),a
+ dec e
+ ld (de),a
+ res 4,d
+ ld (de),a
+ inc e
+ ld (de),a
+ res 3,d
+ ld (de),a
+ dec e
+ ld (de),a
+ res 5,d
+ jr tileblit_
+tileblit1 ;
+ ld l,a
+ ld h,graphics_tilemap>>12 ; inexact ($2200>>12=$02)...
+ add hl,hl ; x2
+ add hl,hl ; x4
+ add hl,hl ; x8
+ inc h ; ...so we add the missing $200 here!
+ add hl,hl ; x16
+ ld sp,hl
+ ex de,hl
+ pop de
+ ld (hl),e
+ inc l
+ ld (hl),d
+ set 3,h
+ pop de
+ ld (hl),d
+ dec l
+ ld (hl),e
+ set 4,h
+ pop de
+ ld (hl),e
+ inc l
+ ld (hl),d
+ res 3,h
+ pop de
+ ld (hl),d
+ dec l
+ ld (hl),e
+ set 5,h
+ pop de
+ ld (hl),e
+ inc l
+ ld (hl),d
+ set 3,h
+ pop de
+ ld (hl),d
+ dec l
+ ld (hl),e
+ res 4,h
+ pop de
+ ld (hl),e
+ inc l
+ ld (hl),d
+ res 3,h
+ pop de
+ ld (hl),d
+ dec l
+ ld (hl),e
+ res 5,h
+ ex de,hl
+tileblit_ ;
+ endm
+
+tile_screen ; redraw all the tiles! -; !
+tilevram ld hl,$7800 ; TILE CACHE 1+2
+softvram ld de,$8000 ; VRAM
+ ld bc,fulltile
+tile_offset = $-2 ; MUST BE x4!
+ ld xh,25
+ ld (tile_screen_+1),sp ; protect stack
+tile_screeny ;
+ if 0;HEAVY?
+  ld xl,40/4
+ else;!HEAVY
+  ld xl,40
+ endif;HEAVY.
+tile_screenx ; BC=tilemap,DE=^VRAM,HL=cache
+ ld a,(bc)
+ cp (hl)
+ di ; disable int's as late as possible!
+ jr z,tile_screen1
+ ld (tile_screen1-2),hl ; protect index
+ tileblit tile_screen1_
+ ld hl,$2121 ; restore index
+tile_screen1 inc e
+ if 0;HEAVY?
+ inc e
+ inc l
+ inc c
+ ld a,(bc)
+ cp (hl)
+ jr z,tile_screen2
+ ld (tile_screen2-2),hl ; protect index
+ tileblit tile_screen2_
+ ld hl,$2121 ; restore index
+tile_screen2 inc e
+ inc e
+ inc l
+ inc c
+ ld a,(bc)
+ cp (hl)
+ jr z,tile_screen3
+ ld (tile_screen3-2),hl ; protect index
+ tileblit tile_screen3_
+ ld hl,$2121 ; restore index
+tile_screen3 inc e
+ inc e
+ inc l
+ inc c
+ ld a,(bc)
+ cp (hl)
+ jr z,tile_screen4
+ ld (tile_screen4-2),hl ; protect index
+ tileblit tile_screen4_
+ ld hl,$2121 ; restore index
+tile_screen4 inc e
+ else;!HEAVY
+ endif;HEAVY.
+ inc de ; beware of
+ inc hl ; the 8-bit
+ inc bc ; overflow!
+tile_screen_ ld sp,$3131 ; restore stack
+ ei ; restore int's as soon as possible!
+ dec xl
+ jp nz,tile_screenx
+ ld a,c
+ add 80/2
+ ld c,a
+ adc b
+ sub c
+ ld b,a
+ dec xh
+ jp nz,tile_screeny
+ ret
+
+; ========================================================================
+; SPRITE ENGINE
+; ========================================================================
+
+sprite_calc ; DE=POSY:POSX; DE=^VRAM,AHL!
+ ld a,d
+ and 8-1
+ add a
+ add a
+ add a
+ ld (sprite_calc_+1),a
+ ld a,d
+ and -8
+ rrca
+ rrca
+ rrca
+ ld d,a
+ ld a,e
+ ld e,d
+ ld d,0 ; POSY
+ ld l,e
+ ld h,d
+ add hl,hl ; x2
+ add hl,hl ; x4
+ add hl,de ; x5
+ add hl,hl ; x10
+ add hl,hl ; x20
+ add hl,hl ; x40
+ add hl,hl ; x80
+ ld e,a
+ ld a,(softvram+2)
+sprite_calc_ add 0
+ ld d,a
+ add hl,de ; POSX+VRAM
+ ex de,hl ; DE=^VRAM
+ ret
+
+byte_mask_ltr macro
+ ld a,(bc)
+ inc bc
+ ld l,a
+ ld a,(de)
+ and (hl)
+ or l
+ ld (de),a
+ inc de
+ endm
+byte_mask_rtl macro
+ ld a,(bc)
+ inc bc
+ ld l,a
+ inc h
+ ld l,(hl)
+ dec h
+ ld a,(de)
+ and (hl)
+ or l
+ ld (de),a
+ dec de
+ endm
+
+sprite_blit ; HL=^SPRITE,DE=POSY:POSX,BC=LENY:LENX; ABCDEHLIY!
+ push hl
+ call sprite_calc
+ pop hl
+ xor a
+ sub c
+ ld (sprite_blit1_+1),a
+ ld a,b
+ ld b,0
+sprite_blit1 push bc
+ ldir
+ ex de,hl
+sprite_blit1_ ld bc,$0800-1
+ add hl,bc
+ bit 6,h
+sprite_blit_ jr z,$+6 ; JR Z/NZ!
+ ld bc,80-$4000
+ add hl,bc
+ ex de,hl
+ pop bc
+ dec a
+ jr nz,sprite_blit1
+ ret
+
+sprite_drawfromoffset ; like SPRITE_DRAW but with offset checks
+ ld a,(tile_offset)
+ add a
+ neg
+ add e
+ ld e,a
+sprite_draw ; HL=^SPRITE[BIT0=FLIP?],DE=POSY:POSX,BC=LENY:LENX; ABCDEHLIY!
+ ld iy,0
+ ld a,d
+ cp 200
+ jr c,sprite_draw_t_
+ add b
+ ret nc ; sprite outside screen!
+; ret z ; ditto
+; clip top bytes
+ push bc
+ ld b,0
+sprite_draw_t add hl,bc
+ inc d
+ jr nz,sprite_draw_t
+ pop bc
+ ld b,a
+ ld a,d;=0
+sprite_draw_t_ ;ld a,d
+ add b
+ sub 200+1
+ jr c,sprite_draw_b_
+ inc a
+; clip bottom bytes
+ ld b,a
+sprite_draw_b_ ld a,e
+ cp 80
+ jr c,sprite_draw_l_
+ add c
+ ret nc ; sprite outside screen!
+; ret z ; ditto
+; clip left bytes
+ ld e,a
+ ld a,c
+ sub e
+ ld yl,a
+ ld c,e
+ xor a
+ ld e,a;=0
+sprite_draw_l_ ;ld a,e
+ add c
+ sub 80+1
+ jr c,sprite_draw_r_
+ inc a
+; clip right bytes
+ ld yh,a
+ ld a,c
+ sub yh
+ ld c,a
+sprite_draw_r_ ; HL=^SPRITE,DE=POSY:POSX,BC=LENY:LENX,IY=GAPR:GAPL
+ xor a
+ cp c
+ ret z ; give up on no width
+ cp b
+ ret z ; give up on no height
+
+; flag the tile cache so the sprite gets cleaned up later
+ push bc
+ push de
+ push hl
+ ld a,b
+ add d
+ dec a
+ or 8-1
+ inc a
+ ld b,a ; POSY+LENY in tiles*8
+ ld a,c
+ add e
+ dec a
+ or 2-1
+ inc a
+ ld c,a ; POSX+LENX in tiles*2
+ ld a,d
+ and -8 ; POSY in tiles*8
+ ld l,a
+ neg
+ add b
+ rrca
+ rrca
+ rrca
+ ld b,a ; LENY in tiles
+ ld a,l
+ ld h,0
+ add hl,hl ; x16
+ add hl,hl ; x32
+ add l
+ ld l,a
+ adc h
+ sub l
+ ld h,a ; x40
+ ld a,e
+ and -2 ; POSX in tiles*2
+ ld e,a
+ neg
+ add c
+ rrca
+ ld c,a ; LENX in tiles
+ ld a,e
+ rrca
+ add l
+ ld e,a
+ adc h
+ sub e
+ ld d,a
+ ld hl,(tilevram+1)
+ add hl,de
+ ld a,40
+ sub c
+ ld e,a
+ ld d,-1
+sprite_draw_mapy ld a,c
+sprite_draw_mapx ld (hl),d
+ inc hl
+ dec c
+ jr nz,sprite_draw_mapx
+ ld c,a
+ inc d
+ add hl,de
+ dec d
+ dec b
+ jr nz,sprite_draw_mapy
+ pop hl
+ pop de
+ pop bc
+
+; prepare everything for the sprite rendering proper
+ push bc
+ bit 0,l
+ push af
+ res 0,l
+ push hl
+ jr z,sprite_draw_
+ ld a,c
+ dec a
+ add e
+ ld e,a ; POSX+=LENX-1
+ ld a,yl
+ ld yl,yh
+ ld yh,a ; SWITCH GAPR:GAPL
+sprite_draw_ call sprite_calc
+ pop bc
+ ld a,c
+ add yl
+ ld c,a
+ adc b
+ sub c
+ ld b,a ; BC=^SPRITE+GAPL/R
+ ld a,yl
+ add yh
+ ld l,a
+ pop af ; A=GAPR/L,ZF=LTR?
+ ld a,l
+ pop iy ; IY=LENY:LENX
+ jr nz,sprite_rtl
+
+sprite_ltr and a ; BC=^SPRITE,DE=^VRAM,IY=LENY:LENX,A=GAP; !
+ jr z,sprite_ltr_
+; LTR WITH GAP
+ ld (sprite_ltr0+1),a
+ xor a
+ sub yl
+ ld (sprite_ltr4+1),a
+ ld a,sprite_ltr0-sprite_ltr6_
+ sub sprite_ltr2_-sprite_ltr2
+ dec yl
+ jr nz,$-4
+ ld (sprite_ltr6_-1),a
+ or a ; NONZERO!
+ jp sprite_ltr6
+sprite_ltr_ ; WITHOUT GAP
+ ;xor a
+ sub yl
+ ld (sprite_ltr3+1),a
+ ld a,sprite_ltr3-sprite_ltr5_
+ sub sprite_ltr1_-sprite_ltr1
+ dec yl
+ jr nz,$-4
+ ld (sprite_ltr5_-1),a
+ or a ; NONZERO!
+ jp sprite_ltr5
+
+sprite_rtl and a ; BC=^SPRITE,DE=^VRAM,IY=LENY:LENX,A=GAP; !
+ jr z,sprite_rtl_
+; RTL WITH GAP
+ ld (sprite_rtl0+1),a
+ ld a,yl
+ ld (sprite_rtl4+1),a
+ ld a,sprite_rtl0-sprite_rtl6_
+ sub sprite_rtl2_-sprite_rtl2
+ dec yl
+ jr nz,$-4
+ ld (sprite_rtl6_-1),a
+ or a ; NONZERO!
+ jp sprite_rtl6
+sprite_rtl_ ; WITHOUT GAP
+ ld a,yl
+ ld (sprite_rtl3+1),a
+ ld a,sprite_rtl3-sprite_rtl5_
+ sub sprite_rtl1_-sprite_rtl1
+ dec yl
+ jr nz,$-4
+ ld (sprite_rtl5_-1),a
+ or a ; NONZERO!
+ jp sprite_rtl5
+
+sprite_ltr1 ; MAX 8 BYTES!
+ byte_mask_ltr
+sprite_ltr1_ ;
+ byte_mask_ltr
+ byte_mask_ltr
+ byte_mask_ltr
+ byte_mask_ltr
+ byte_mask_ltr
+ byte_mask_ltr
+ byte_mask_ltr
+sprite_ltr3 ld hl,$0800-1
+ add hl,de
+ bit 6,h
+sprite_ltr3_ jr z,$+6 ; JR Z/NZ!
+ ld de,80-$4000
+ add hl,de
+ ex de,hl
+ dec yh
+sprite_ltr5 ld h,hi maskflip_mask
+ jr nz,sprite_ltr1 ; MODIFY WIDTH!
+sprite_ltr5_ ret
+
+sprite_ltr2 ; MAX 8 BYTES!
+ byte_mask_ltr
+sprite_ltr2_ ;
+ byte_mask_ltr
+ byte_mask_ltr
+ byte_mask_ltr
+ byte_mask_ltr
+ byte_mask_ltr
+ byte_mask_ltr
+sprite_ltr0 ld a,0 ; GAP BETWEEN SCANLINES!
+ add c
+ ld c,a
+ adc b
+ sub c
+ ld b,a
+sprite_ltr4 ld hl,$0800-1
+ add hl,de
+ bit 6,h
+sprite_ltr4_ jr z,$+6 ; JR Z/NZ!
+ ld de,80-$4000
+ add hl,de
+ ex de,hl
+ dec yh
+sprite_ltr6 ld h,hi maskflip_mask
+ jr nz,sprite_ltr2 ; MODIFY WIDTH!
+sprite_ltr6_ ret
+
+sprite_rtl1 ; MAX 8 BYTES!
+ byte_mask_rtl
+sprite_rtl1_ ;
+ byte_mask_rtl
+ byte_mask_rtl
+ byte_mask_rtl
+ byte_mask_rtl
+ byte_mask_rtl
+ byte_mask_rtl
+ byte_mask_rtl
+sprite_rtl3 ld hl,$0800+1
+ add hl,de
+ bit 6,h
+sprite_rtl3_ jr z,$+6 ; JR Z/NZ!
+ ld de,80-$4000
+ add hl,de
+ ex de,hl
+ dec yh
+sprite_rtl5 ld h,hi maskflip_mask
+ jr nz,sprite_rtl1 ; MODIFY WIDTH!
+sprite_rtl5_ ret
+
+sprite_rtl2 ; MAX 8 BYTES!
+ byte_mask_rtl
+sprite_rtl2_ ;
+ byte_mask_rtl
+ byte_mask_rtl
+ byte_mask_rtl
+ byte_mask_rtl
+ byte_mask_rtl
+ byte_mask_rtl
+sprite_rtl0 ld a,0 ; GAP BETWEEN SCANLINES!
+ add c
+ ld c,a
+ adc b
+ sub c
+ ld b,a
+sprite_rtl4 ld hl,$0800+1
+ add hl,de
+ bit 6,h
+sprite_rtl4_ jr z,$+6 ; JR Z/NZ!
+ ld de,80-$4000
+ add hl,de
+ ex de,hl
+ dec yh
+sprite_rtl6 ld h,hi maskflip_mask
+ jr nz,sprite_rtl2 ; MODIFY WIDTH!
+sprite_rtl6_ ret
+
+; ========================================================================
+; HARDWARE CODE
+; ========================================================================
+
+; INTERRUPT HANDLER
+int7 push af ; 300 Hz
+ ld a,$F5
+ in a,(0)
+ rrca
+ jr nc,int7_ ; VSYNC: 50 Hz
+ ld a,0
+ inc a
+ ld ($-2),a
+ rrca
+ jr c,int7_ ; 25 Hz
+ push bc
+ push de
+ push hl
+ push ix
+ ld hl,frame7+1
+ inc (hl)
+ jr nz,$+3
+ dec (hl)
+ ld hl,0
+int7song = $-2
+ ld a,h
+ or l
+ call nz,chip_song
+ ld de,0
+int7chan = $-2
+ ld a,d
+ or e
+ ld a,1
+ call nz,chip_chan
+ call chip_play
+ ld hl,0
+ ld (int7song),hl
+ ld (int7chan),hl
+ pop ix
+ pop hl
+ pop de
+ pop bc
+int7_ pop af
+ ei
+ ret
+
+frame1 ld a,1
+frame dec a ; A=FRAMES; A=0
+frame_; halt
+frame7 cp 0
+ jr nc,frame_
+ xor a
+ ld (frame7+1),a
+ ret
+
+; KEYBOARD ROUTINES
+haltreadkeys halt
+readkeys ; UPDATE KEY MAP: -; BCHLF!
+ ld hl,keymap+9
+ ld bc,$F40E
+ out (c),c
+ ld bc,$F6C0 ; select register
+ out (c),c
+ dw $71ED ;*OUT (C),0
+ ld bc,$F792
+ out (c),c
+ ld c,$40+9 ; read register+keyboard line
+readkeys1 ld b,$F6
+ out (c),c
+ ld b,$F4
+ ind ; IN x,(C); LD (HL),x; DEC B; DEC HL
+ dec c
+ bit 4,c
+ jr z,readkeys1
+ ld bc,$F782
+ out (c),c
+ ret
+
+testquit ld a,66 ; "ESCAPE"
+ db $21 ; DUMMY "LD HL,$XXXX"
+testhold ld a,27 ; "P"
+testakey ; TEST A KEY: A=KEY; AHL!,CF=0,ZF=PRESSED?
+ rrca
+ rrca
+ rrca
+ ld h,a
+ and $0F
+ ld l,a
+ ld a,h
+ rrca
+ rrca
+ and $38
+ add $46 ;*BIT n,R
+ ld (testakey_+1),a
+ ld a,l
+ add lo keymap
+ ld l,a
+ ld a,0
+ adc hi keymap
+ ld h,a ; force CF=0!
+testakey_ bit 0,(hl)
+ ret
+
+haltreadpollkeys call haltreadkeys
+pollkeys ; LOOK FOR A PRESSED KEY; -; A=KEY,CF=0,ZF=PRESSED?,CHL!
+ ld a,80
+pollkeys1 dec a
+ ret m ; give up if out of keys, ZF=0
+ ld c,a
+ call testakey
+ ld a,c
+ ret z ; return on active key, ZF=1
+ jr pollkeys1
+
+timedkey0 xor a ; 256/25Hz~10s
+timedkey ; A=WAIT; ABCHL!,CF=TIMEOUT?,A=KEY
+ ld e,a
+timedkey1 call frame1
+ call haltreadpollkeys
+ jr z,wait4key_ ; CF=0
+ dec e
+ jr nz,timedkey1
+ scf ; CF=1
+ ret
+wait4key ; WAIT FOR A KEY TO BE PRESSED AND RELEASED; HL!,ZF=1,CF=0,A=KEY
+ call haltreadpollkeys
+ jr nz,$-3
+wait4key_ push af
+ call haltreadpollkeys ; WAIT FOR KEYS TO BE RELEASED
+ jr z,$-3
+ pop af
+ ret
+
+; CRTC/SCR ROUTINES
+vsync ; -; A!
+ ld a,$F5
+ in a,(0)
+ rrca
+ jr c,$-5
+ ld a,$F5
+ in a,(0)
+ rrca
+ jr nc,$-5
+ ret
+crtcpair ; BC=CRTC pair,HL=VAL1:VAL2
+ out (c),c
+ inc b
+ out (c),h
+ dec b
+ inc c
+ out (c),c
+ inc b
+ out (c),l
+ dec b
+ ret
+
+slowvram ; software screen buffer fadein
+ if 0
+ ld hl,(softvram+1) ; VRAM offset
+ ld b,200
+slowvram1 ; copy one scanline
+ ld a,h
+ xor $40
+ ld d,a
+ ld e,l
+ ld a,b
+ ex de,hl
+ ld bc,(80/2)*256+$CC
+ ld (hl),c
+ inc hl
+ ld (hl),c
+ inc hl
+ djnz $-4
+ ld bc,-80
+ add hl,bc
+ ex de,hl
+ ld b,a
+ halt
+ ld a,b
+ ld bc,80
+ ldir
+ ld b,a
+ ld de,$800-80
+ add hl,de
+ ld a,h
+ and $38
+ jr nz,$+6
+ ld de,80-$4000
+ add hl,de
+ djnz slowvram1
+ ret
+ endif
+fastvram ; hardware screen buffer switch
+crtcvram ld hl,$2000 ; CRTC config
+ ld bc,$BC0C
+ call crtcpair
+flipvram ; switch raw screen access on/off
+ ld a,(tilevram+2)
+ xor $04
+ ld (tilevram+2),a ; $7C/$78
+ add a
+ add a
+ and $30
+ ld (crtcvram+2),a ; $30/$20
+ add a ; x2
+ add a ; x4
+ ld (softvram+2),a ; $C0/$80
+
+ and $40
+ ld a,$20 ; JR NZ,...
+ jr nz,$+4
+ ld a,$28 ; JR Z,...
+ ld (sprite_ltr3_),a
+ ld (sprite_ltr4_),a
+ ld (sprite_rtl3_),a
+ ld (sprite_rtl4_),a
+ ld (sprite_blit_),a
+ ret
+
+nukevram ld a,$C0 ; A=BLACK!
+wipevram ; A=BYTE; ACHL!
+ ld c,a
+ ld hl,(softvram+1)
+ ld a,h
+ add $40
+wipewram_ ;
+ ld (hl),c
+ inc l
+ ld (hl),c
+ inc l
+ ld (hl),c
+ inc l
+ ld (hl),c
+ inc l
+ jr nz,wipewram_
+ inc h
+ cp h
+ jr nz,wipewram_
+ ret
+
+; ========================================================================
+; MUSIC AND SFX
+; ========================================================================
+
+writepsg push bc ; required by CHIPNSFX
+ ld b,$F4
+ out (c),c
+ ld bc,$F6C0 ; select register
+ out (c),c
+ dw $71ED ;*OUT (C),0
+ ld b,$F4
+ out (c),a
+ ld bc,$F680 ; write register
+ out (c),c
+ dw $71ED ;*OUT (C),0
+ pop bc
+ ret
+stopsong halt ; avoid interruptions!
+ jr chip_stop
+
+CHIPNSFX_FLAG = 0+4
+chipnsfx ;
+ include "chipnsfx.i80"
+
+chan0 ; boing
+ db $00FE,$C0,12+9,$00F0
+chan1 ; whistle
+ db $00FE,$9C,$8F+20,12*6+9,$00F0
+chan2 ; jingle, from "Mad Mix Game" :-)
+ db $00F8,$EE,$00FE,$FB,36+35,$8F,36+40,$8F,36+44,$8F,$8F+4,36+47,$8F+1,36+40,$8F,$8F+8,36+47,$00F0
+
+song0 ;
+ dw basketcs_a-$-2,basketcs_b-$-4,basketcs_c-$-6
+ include "basketcs.mus"
+song1 ;
+ dw basketct_a-$-2,basketct_b-$-4,basketct_c-$-6
+ include "basketct.mus"
+song2 ;
+ dw basketcu_a-$-2,basketcu_b-$-4,basketcu_c-$-6
+ include "basketcu.mus"
+
+; ========================================================================
+; TEXT CONTENTS
+; ========================================================================
+
+txt_title db "GET READY FOR THE ",0,"BASKET CASES_",0
+ db "CODED BY ",0,"CESAR NICOLAS GONZALEZ",0
+ db "[CNGSOFT]",0," FOR CPC RETRODEV 2017",0
+ db "PRESS FIRE [1P OR 2P] TO START<",0
+ db "OR ESCAPE TO REDEFINE CONTROLS>",0
+txt_title_ db "IN=GAME: P HOLDS< ESCAPE QUITS>",0
+txt_redefine db "1P UP ",0,"DOWN ",0,"LEFT ",0,"RIGHT ",0,"FIRE ",0,"JUMP ",0
+ if 0;HEAVY?
+txt_infos ;
+ db "^BASKET CASES^ IS A 2=ON=2 BASKETBALL",0
+ db "GAME WITH FEW RULES AND MANY ODDITIES<",0
+ db "AS FUN IS MORE IMPORTANT THAN REALISM>",0
+ db 0
+
+ db "CONTROL MODE CAN BE EITHER AUTOMATIC",0
+ db "[SAME KEY OR BUTTON FOR FIRE AND JUMP<",0
+ db "FOR EXAMPLE DINAMIC;S ^FERNANDO MARTIN",0
+ db "BASKET MASTER^] OR MANUAL< AS SEEN IN",0
+ db "MIDWAY;S ^ARCH RIVALS^ AND ^NBA JAM^>",0
+ db 0
+
+ db "THIS GAME WAS MADE IN DIRE CONDITIONS<",0
+ db "I HAD TEN DAYS TO DO EVERYTHING :=[",0
+ db 0
+ else;!HEAVY
+ endif;HEAVY.
+
+txt_level db "LEVEL "
+game_level db "0>  READY?",0
+txt_congrats db "CONGRATULATIONS< YOU WON THE TOURNAMENT_",0
+txt_gameover db "GAME  OVER",0
+
+; ========================================================================
+; DATAS+BUFFERS
+; ========================================================================
+
+hardink1 db "XT@KPUWS\\LNJHGVRT"
+
+keybd1 db 72,73,74,75,76,77 ; JOYSTICK 1, NO KEYS
+keybd2 db 48,49,50,51,52,53 ; JOYSTICK 2 / 65RTGF
+
+object_list ;
+ db  3,  3,128, 64, 0,0,0,0 ; #0: BASKET L
+ db  3,253,128, 64, 0,0,0,0 ; #1: BASKET R
+ db  4,120,128,  0, 4,0,0,0 ; #2: PLAYER L-A: bits 0(owns ball), 2(is primary),3 (is attacking), 4(enemy is attacking)
+ db  4, 96,128,  0, 0,0,0,0 ; #3: PLAYER L-B "
+ db 28,136,128,  0, 4,0,0,0 ; #4: PLAYER R-A "
+ db 28,160,128,  0, 0,0,0,0 ; #5: PLAYER R-B "
+ db  1,128,128, 48, 0,0,0,0 ; #6: BALL
+ db  2,128,128,  0, 0,0,0,0 ; #7: SHADOW
+object_list_ ; SPRITE,POSX,POSY,POSZ,VAR0,VAR1,VAR2,VAR3
+object_sort dw $0040+7*8,$0040+0*8,$0040+1*8,$0040+2*8,$0040+3*8,$0040+4*8,$0040+5*8,$0040+6*8 ; shadow always goes first!
+
+; ball, shadow, basket
+sprite_list dw 0,0*256+0 ; offset, leny*256+lenx/2
+ dw graphics_sprites,12*256+2 ; BALL
+ dw graphics_sprites+4*12,2*256+2 ; SHADOW
+ dw graphics_sprites+4*14,16*256+2 ; BASKET
+ dw graphics_team1+2*8*48+3*6*56+4*6*48+0,48*256+3,graphics_team1+2*8*48+3*6*56+5*6*48+0,48*256+3
+  dw graphics_team1+2*8*48+3*6*56+6*6*48+0,48*256+3,graphics_team1+2*8*48+3*6*56+7*6*48+0,48*256+3 ; WALK EAST
+ dw graphics_team1+2*8*48+3*6*56+4*6*48+1,48*256+3,graphics_team1+2*8*48+3*6*56+5*6*48+1,48*256+3
+  dw graphics_team1+2*8*48+3*6*56+6*6*48+1,48*256+3,graphics_team1+2*8*48+3*6*56+7*6*48+1,48*256+3 ; WALK WEST
+ dw graphics_team1+2*8*48+3*6*56+0*6*48+0,48*256+3,graphics_team1+2*8*48+3*6*56+1*6*48+0,48*256+3
+  dw graphics_team1+2*8*48+3*6*56+0*6*48+1,48*256+3,graphics_team1+2*8*48+3*6*56+1*6*48+1,48*256+3 ; WALK SOUTH
+ dw graphics_team1+2*8*48+3*6*56+2*6*48+0,48*256+3,graphics_team1+2*8*48+3*6*56+3*6*48+0,48*256+3
+  dw graphics_team1+2*8*48+3*6*56+2*6*48+1,48*256+3,graphics_team1+2*8*48+3*6*56+3*6*48+1,48*256+3 ; WALK NORTH
+ dw graphics_team1+2*8*48+2*6*56+0,56*256+3 ; JUMP EAST
+ dw graphics_team1+2*8*48+2*6*56+1,56*256+3 ; JUMP WEST
+ dw graphics_team1+2*8*48+0*6*56+0,56*256+3 ; JUMP SOUTH
+ dw graphics_team1+2*8*48+1*6*56+0,56*256+3 ; JUMP NORTH
+ dw graphics_team2+2*8*48+3*6*56+4*6*48+0,48*256+3,graphics_team2+2*8*48+3*6*56+5*6*48+0,48*256+3
+  dw graphics_team2+2*8*48+3*6*56+6*6*48+0,48*256+3,graphics_team2+2*8*48+3*6*56+7*6*48+0,48*256+3 ; WALK EAST
+ dw graphics_team2+2*8*48+3*6*56+4*6*48+1,48*256+3,graphics_team2+2*8*48+3*6*56+5*6*48+1,48*256+3
+  dw graphics_team2+2*8*48+3*6*56+6*6*48+1,48*256+3,graphics_team2+2*8*48+3*6*56+7*6*48+1,48*256+3 ; WALK WEST
+ dw graphics_team2+2*8*48+3*6*56+0*6*48+0,48*256+3,graphics_team2+2*8*48+3*6*56+1*6*48+0,48*256+3
+  dw graphics_team2+2*8*48+3*6*56+0*6*48+1,48*256+3,graphics_team2+2*8*48+3*6*56+1*6*48+1,48*256+3 ; WALK SOUTH
+ dw graphics_team2+2*8*48+3*6*56+2*6*48+0,48*256+3,graphics_team2+2*8*48+3*6*56+3*6*48+0,48*256+3
+  dw graphics_team2+2*8*48+3*6*56+2*6*48+1,48*256+3,graphics_team2+2*8*48+3*6*56+3*6*48+1,48*256+3 ; WALK NORTH
+ dw graphics_team2+2*8*48+2*6*56+0,56*256+3 ; JUMP EAST
+ dw graphics_team2+2*8*48+2*6*56+1,56*256+3 ; JUMP WEST
+ dw graphics_team2+2*8*48+0*6*56+0,56*256+3 ; JUMP SOUTH
+ dw graphics_team2+2*8*48+1*6*56+0,56*256+3 ; JUMP NORTH
+
+game_scoredigits ;
+ db 16,17; 0
+ db 18,19; 1
+ db 20,21; 2
+ db 20,22; 3
+ db 23,24; 4
+ db 25,22; 5
+ db 25,17; 6
+ db 26,24; 7
+ db 27,17; 8
+ db 27,22; 9
+ db 28,28; A
+ db 29,29; B
+ db 30,30; L
+ db 31,31; R
+
+game_advertdata ;
+ db 237,224,  3,225,  3,  3,  3,  3,  3,  3,  3,238
+ db 237,226,227,228,229,230,231,232,233,234,235,238
+ db 237,  3,  3,  3,  3,  3,  3,  3,  3,236,  3,238 ; INDESCOMP
+ db 237,  3,  3,  3,  3,  3,  3,  3,  3,  3,  3,238
+ db 237,208,209,210,211,212,213,214,215,216,217,238
+ db 237,218,219,219,219,219,219,  3,  3,  3,  3,238 ; OPERA SOFT
+ db 239,  1,  1,  1,240,241,242,243,244,245,  1,  1
+ db 239,  1,  1,246,247,243,243,243,248,249,  1,  1
+ db 239,  1,  1,250,251,252,243,253,254,  1,  1,  1 ; DINAMIC
+ db 239,  1,  1,192,193,194,195,  1,  1,  1,  1,  1
+ db 239,  1,  1,196,197,198,199,200,201,202,  1,  1
+ db 239,  1,203,203,203,203,203,203,203,203,  1,  1 ; TOPO SOFT
+
+; . . . . . . . . . .  <shoes>  <trouser|shirt>  <eye|mouth|hair> <body_> <face_>
+;  . . . . . . . -  _0  13  26   _1  _2  11  20   _3  _6  15  24   _7  16  _9  18
+; COLOURS 00-0F: 0,$40,$04,$44 ,$10,$50,$14,$54 ,$01,$41,$05,$45 ,$11,$51,$15,$55
+palette_team0 db 0,$40,$04,$44 ,$10,$50,$14,$54 ,$40,$41,$05,$45 ,$01,$51,$01,$51 ; playr1 cyan+blue pink yellow
+palette_team1 db 0,$40,$04,$44 ,$01,$41,$05,$45 ,$40,$41,$40,$40 ,$01,$51,$01,$51 ; playr2 yellow+red pink black
+palette_team2 db 0,$40,$04,$44 ,$05,$45,$41,$05 ,$44,$41,$40,$10 ,$40,$01,$40,$01 ; shaved orange+yellow brown black
+palette_team3 db 0,$40,$04,$44 ,$41,$05,$01,$41 ,$44,$41,$10,$50 ,$40,$40,$40,$40 ; bigwig red+orange brown black
+palette_team4 db 0,$40,$04,$44 ,$01,$11,$01,$11 ,$01,$41,$01,$41 ,$01,$51,$01,$51 ; short_ purple+purple pink red
+palette_team5 db 0,$40,$04,$44 ,$01,$41,$15,$55 ,$10,$41,$05,$45 ,$01,$51,$01,$51 ; l.ears red+green pink yellow
+palette_team6 db 0,$40,$04,$44 ,$40,$40,$40,$04 ,$40,$40,$40,$04 ,$04,$44,$04,$44 ; skulls gray+black white white
+palette_team7 db 0,$40,$04,$44 ,$01,$11,$10,$50 ,$44,$40,$04,$44 ,$14,$54,$14,$54 ; cyclop blue+purple cyan blue
+palette_team8 db 0,$40,$04,$44 ,$15,$55,$04,$44 ,$01,$41,$14,$54 ,$10,$50,$10,$50 ; mutant white+green blue red
+palette_team9 db 0,$40,$04,$44 ,$40,$40,$04,$44 ,$44,$10,$11,$51 ,$01,$41,$01,$41 ; demons white+black red pink
+
+keymap ds 10
+chipnsfx_bss ds CHIPNSFX_TOTAL
+
+ ds $2300-$;align 1<<8
+graphics ; skips first 16chars (solid colours)
+ include "basketcs.inc"
+
+graphics_tilemap = graphics-16*16
+graphics_charmap = graphics_tilemap+256*16
+graphics_sprites = graphics_charmap+48*32
+graphics_teamgfx = graphics_sprites+30*40
+graphics_teamgfx_ = graphics_teamgfx+2*(8*48)+3*(6*56)+8*(6*48)
+graphics_congrats = graphics_teamgfx_+0
+graphics_congrats_ = graphics_congrats+14*48
+
+maskflip_mask = graphics_tilemap+32*16
+maskflip_flip = graphics_tilemap+48*16
+
+ align 4
+fulltile ;
+ db  8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34, 1 ; _0
+ ds 40
+ db  8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,33,33,33,33,33,33,33,33,33,33,33,33,33,34, 1 ; _1
+ ds 40
+ db  8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,32, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2,34, 1 ; _2
+ ds 40
+ db  8, 8, 8, 8, 8, 8, 8,52, 8, 8, 8, 8, 8, 8,48,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,33,34, 1 ; _3
+ ds 40
+ db  8, 8, 8, 8, 8,35,37, 3, 8, 8, 8, 8, 8, 8, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3,34, 1 ; _4
+ ds 40
+ db  8, 8, 8, 8,35,51, 3, 3, 8, 8, 8, 8, 8, 8, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4 ; _5
+ ds 40
+ db  8, 8, 8, 8,36,36, 3,53, 8, 8, 8, 8, 8, 8, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4 ; _6
+ ds 40
+ db  8, 8, 8, 8, 8, 8,53, 8, 8, 8, 8, 8, 8,49, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 ; _7
+ ds 40
+ db  8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,49, 4,38,39,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,59 ; _8
+ ds 40
+ db  8, 8, 8, 8, 8, 8, 8, 8, 8, 8, 8,49, 4,38,39,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,55 ; _9
+ ds 40
+ db  8, 8, 8, 8, 8, 8, 8, 8, 8, 8,49, 4,38,39,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,55 ; 10
+ ds 40
+ db  8, 8, 8, 8, 8, 8, 8, 8, 8,49, 4,38,39,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,55 ; 11
+ ds 40
+ db  8, 8, 8, 8, 8, 8, 8, 8,49, 4,38,39,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,55 ; 12
+ ds 40
+ db  8, 8, 8, 8, 8, 8, 8,49, 4,38,39,43,43,43,43,43,43,43,43,43,57,58,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,55 ; 13
+ ds 40
+ db  8, 8, 8, 8, 8, 8,49, 4,38,39,04,04,04,04,04,04,40,41,42,43,75,74,73,72,04,04,04,04,04,04,04,04,04,04,04,04,40,41,42,43 ; 14
+ ds 40
+ db  8, 8, 8, 8, 8,49, 4,38,39,04,04,04,04,04,04,04,56,04,04,04,04,04,04,88,04,04,04,04,04,04,04,04,04,04,04,04,56,04,04,04 ; 15
+ ds 40
+ db  8, 8, 8, 8,49, 4,38,39,04,04,04,04,04,04,04,04,44,04,04,04,04,04,04,76,04,04,04,04,04,04,04,04,04,04,04,04,44,04,04,04 ; 16
+ ds 40
+ db  8, 8, 8,49, 4,38,39,04,04,04,04,04,04,04,04,04,60,61,62,63,95,94,93,92,04,04,04,04,04,04,04,04,04,04,04,04,60,61,62,63 ; 17
+ ds 40
+ db  8, 8,49, 4,38,54,63,63,63,63,63,63,63,63,63,63,63,63,45,46,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,55 ; 18
+ ds 40
+ db  8,49, 4,38,39,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,55 ; 19
+ ds 40
+ db 49, 4,38,39,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,55 ; 20
+ ds 40
+ db  4,38,39,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,55 ; 21
+ ds 40
+ db 38,39,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,04,55 ; 22
+ ds 40
+ db 54,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,63,47 ; 23
+ ds 40
+ db  4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4 ; 24
+ ds 40
+solidcolours db 0,$C0,$0C,$CC ,$30,$F0,$3C,$FC ,$03,$C3,$0F,$CF ,$33,$F3,$3F,$FF
+
+ align 4
+tempdata ;
+graphics_team1 = tempdata
+graphics_team2 = tempdata+1*(graphics_teamgfx_-graphics_teamgfx)
+last ;
+ end

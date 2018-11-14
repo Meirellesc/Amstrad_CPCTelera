@@ -1,0 +1,58 @@
+-mjwx
+-i obj/Lunatic.ihx
+-b _CODE = 0x0040
+-b _DATA = 0x0000
+-u
+-k /Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/tools/sdcc-3.6.8-r9946/bin/../share/sdcc/lib/z80
+-k /Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/tools/sdcc-3.6.8-r9946/share/sdcc/lib/z80
+-l /Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/cpctelera.lib
+-l z80
+obj/levels/fin.rel
+obj/levels/controls.rel
+obj/levels/level8.rel
+obj/levels/level9.rel
+obj/levels/level10.rel
+obj/levels/level2.rel
+obj/levels/level1.rel
+obj/levels/level0.rel
+obj/sprites/tiles.rel
+obj/sprites/numbers.rel
+obj/sprites/disparo.rel
+obj/sprites/bala.rel
+obj/sprites/puerta.rel
+obj/sprites/llave.rel
+obj/sprites/eleccion.rel
+obj/sprites/GameOver.rel
+obj/sprites/fondotitulo.rel
+obj/sprites/title.rel
+obj/sprites/life.rel
+obj/sprites/heror.rel
+obj/sprites/fondo1.rel
+obj/sprites/robotr.rel
+obj/levels/level3.rel
+obj/cargar_level.h.rel
+obj/cargar_level.rel
+obj/colision.h.rel
+obj/colision.rel
+obj/disparo.h.rel
+obj/disparo.rel
+obj/enemy.h.rel
+obj/enemy.rel
+obj/entity.h.rel
+obj/entity.rel
+obj/funciones_mat.h.rel
+obj/funciones_mat.rel
+obj/load_level.h.rel
+obj/load_level.rel
+obj/main.h.rel
+obj/main.rel
+obj/numbers.h.rel
+obj/numbers.rel
+obj/objects.h.rel
+obj/objects.rel
+obj/platform.h.rel
+obj/platform.rel
+obj/titulo.h.rel
+obj/titulo.rel
+
+-e

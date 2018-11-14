@@ -1,0 +1,76 @@
+XL2
+H 1 areas 1D global symbols
+S cpct_setPalette_asm Ref0000
+S cpct_isKeyPressed_asm Ref0000
+S ent_background Ref0000
+S cpct_setPALColour_asm Ref0000
+S hero_jump Ref0000
+S cpct_drawStringM0_asm Ref0000
+S cpct_drawSprite_asm Ref0000
+S update_draw_life Ref0000
+S ent_draw Ref0000
+S jumpControl Ref0000
+S .__.ABS. Def0000
+S cpct_drawSpriteMasked_asm Ref0000
+S hero_data Ref0000
+S ent_update Ref0000
+S pos_y Ref0000
+S hero_fall Ref0000
+S ent_isJumping_or_canFall Ref0000
+S hero_dispara Ref0000
+S cpct_setVideoMode_asm Ref0000
+S cpct_waitVSYNC_asm Ref0000
+S cpct_disableFirmware_asm Ref0000
+S cpct_drawSolidBox_asm Ref0000
+S cpct_setDrawCharM0_asm Ref0000
+S cpct_scanKeyboard_asm Ref0000
+S cpct_getScreenPtr_asm Ref0000
+A _CODE size 56 flags 0 addr 0
+S multiplicar_2 Def0001
+S multiplicar_4 Def0003
+S dividir_2 Def0013
+S dividir_4 Def002A
+T 00 00 C8
+R 00 00 00 00
+T 01 00
+R 00 00 00 00
+T 01 00 87 C9
+R 00 00 00 00
+T 03 00
+R 00 00 00 00
+T 03 00 47 0E 04 16 00
+R 00 00 00 00
+T 08 00
+R 00 00 00 00
+T 08 00 4F 7A 80 57 79 3D C2 08 00 7A C9
+R 00 00 00 00 00 09 00 00
+T 13 00
+R 00 00 00 00
+T 13 00 47 0E 02 16 00
+R 00 00 00 00
+T 18 00
+R 00 00 00 00
+T 18 00 78 91 FA 28 00 47 7A C6 01 57 78 FE 00 C2
+R 00 00 00 00 00 05 00 00
+T 26 00 18 00
+R 00 00 00 00 00 02 00 00
+T 28 00
+R 00 00 00 00
+T 28 00 7A C9
+R 00 00 00 00
+T 2A 00
+R 00 00 00 00
+T 2A 00 57 0E 04 06 00
+R 00 00 00 00
+T 2F 00
+R 00 00 00 00
+T 2F 00 7A 91 57 7A FE 03 CA 54 00 7A FE 02 CA
+R 00 00 00 00 00 09 00 00
+T 3C 00 54 00 7A FE 01 CA 54 00 7A FE 00 CA 54 00
+R 00 00 00 00 00 02 00 00 00 08 00 00 00 0E 00 00
+T 4A 00 78 C6 01 47 7A FE 00 C2 2F 00
+R 00 00 00 00 00 0A 00 00
+T 54 00
+R 00 00 00 00
+T 54 00 78 C9
+R 00 00 00 00

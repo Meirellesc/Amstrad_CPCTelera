@@ -1,0 +1,67 @@
+========================================================================
+
+BASKET CASES v.1 (ENGLISH)
+
+SCENARIO
+
+Fancy a match of basketball? “Basket Cases” is a two-on-two basketball videogame pitting nine teams of increasing difficulty and decreasing sportmanship against the player: they won't mind playing foul if that's what it takes them to win the tournament! Oh, two players can duke it out too!
+
+LOADING INSTRUCTIONS
+
+Tape: press the CONTROL and SMALL ENTER keys together, then push PLAY on the tape deck. Owners of computers with disc drives must type |TAPE and press RETURN beforehand.
+Disc: type RUN”DISC and push ENTER.
+
+CONTROLS
+
+Default controls are joysticks #1 and #2. Custom keys can be redefined at the menu. P pauses and resumes the game. ESCAPE quits the game and returns to the menu.
+
+FIRE either passes the ball to the teammate or tries stealing it off a nearby rival. JUMP throws the ball at the basket, or tries catching it if someone else has just thrown it.
+
+GAMEPLAY
+
+Basketball rules have been simplified to ease the gameplay. Players automatically bounce the ball on the floor, stay inside the bounds and avoid committing several violations. Each match is four minutes long.
+
+Human control applies to the player either holding the ball or closest to it; the computer handles the other player. Actions depend upon whether the team is holding the ball (attacking) or not (defending): on attack, jump will either dunk (if the player is below the basket) or shoot the ball to the basket, while fire will pass the ball to the teammate. On defense, jump will try catching an airborne ball, while fire will try stealing the ball off a rival.
+
+AUTHORSHIP AND ACKNOWLEDGEMENTS
+
+“Basket Cases” was developed by César Nicolás González (“CNGSOFT”): programming, graphics, sound effects, music library (CHIPNSFX by CNGSOFT)... The assembler used to compile this game is AS80 by Frank A. Kingswood.
+
+The main sources of inspiration were “International Basketball” (1983 Andrew Spencer), “Fernando Martín Basket Master” (1987 Dinamic), “Arch Rivals” (1989 Midway) and the sports games released by Opera Soft, ranging from “Hockey” (1985) to “Golden Basket” (1990). Serena from “Phantis / Game Over II” (1987 Dinamic) is the guest star. The soundtrack features covers of two songs by David Whittaker and one by Fernando Cubedo (“Phantis”, no less).
+
+The game was made in very dire conditions under ten days of work. My apologies :-(
+
+========================================================================
+
+BASKET CASES v.1 (ESPAÑOL)
+
+ARGUMENTO
+
+¿Te apetece jugar al baloncesto? “Basket Cases” es un videojuego de baloncesto de dos contra dos donde al jugador le esperan nueve equipos cada vez más difíciles y menos deportivos, ¡que harán trampa si lo necesitan para ganar el torneo! Ah, ¡y dos jugadores pueden enfrentarse entre sí!
+
+INSTRUCCIONES DE CARGA
+
+Cinta: pulsa las teclas CONTROL e INTRO a la vez, y luego aprieta PLAY en el casete. Los dueños de ordenadores con unidad de disco antes deben escribir |TAPE y pulsar RETURN.
+Disco: escribe RUN”DISC y pulsa RETURN.
+
+CONTROLES
+
+Los controles por defecto son los joysticks 1 y 2. Es posible redefinir las teclas en el menú. P hace una pausa y reanuda el juego. ESCAPE abandona la partida y regresa al menú.
+
+FUEGO pasa la pelota al compañero, o bien intenta quitársela a un rival cercano. SALTO lanza la pelota a la canasta, o intenta atraparla en el aire si otro jugador la ha lanzado.
+
+CÓMO JUGAR
+
+Las reglas del baloncesto han sido simplificadas para facilitar el juego. Los jugadores botan la pelota automáticamente, permanecen dentro de la cancha y evitan cometer varias infracciones. Un partido dura cuatro minutos.
+
+El control humano se corresponde al jugador que o tiene la pelota o está más cerca; el ordenador se hace cargo del otro jugador. Las acciones dependen de si el equipo tiene la pelota (ataque) o no (defensa): en ataque, el salto hace un mate (si el jugador está bajo la canasta) o un lanzamiento a canasta, mientras que el fuego pasa la pelota al compañero de equipo. En defensa, el salto intenta coger la pelota al vuelo, mientras que el fuego intenta quitársela a un rival.
+
+AUTORÍA Y AGRADECIMIENTOS
+
+“Basket Cases” es obra de César Nicolás González (“CNGSOFT”): programación, gráficos,  efectos de sonido, librería musical (CHIPNSFX de CNGSOFT)... El ensamblador usado para compilar el juego es AS80 de Frank A. Kingswood.
+
+Las principales fuentes de inspiración eran “International Basketball” (1983 Andrew Spencer), “Fernando Martín Basket Master” (1987 Dinamic), “Arch Rivals” (1989 Midway) y los juegos deportivos publicados por Opera Soft, desde “Hockey” (1985) hasta “Golden Basket” (1990). Serena de “Phantis” (1987 Dinamic) es la estrella invitada. La banda sonora contiene versiones de dos canciones de David Whittaker y una de Fernando Cubedo (precisamente “Phantis”).
+
+El juego fue hecho en condiciones muy difíciles en menos de diez días de trabajo. Lo siento :-(
+
+========================================================================

@@ -1,0 +1,49 @@
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 1.
+Hexadecimal [16-Bits]
+
+Symbol Table
+
+    .__.$$$.=  2710 L   |     .__.ABS.=  0000 G   |     .__.CPU.=  0000 L
+    .__.H$L.=  0000 L   |     _bala_sp   **** GX  |     _llave_s   **** GX
+    _puerta_   **** GX  |   0 bala       0010 GR  |     bala_siz=  0008 
+  0 bucle_ob   00DE R   |   0 bucle_ob   00FE R   |     carga_fo   **** GX
+    carga_to   **** GX  |     cargar_n   **** GX  |     cargar_n   **** GX
+  0 coge_obj   0052 R   |     colision   **** GX  |     colision   **** GX
+    colision   **** GX  |     colision   **** GX  |     colision   **** GX
+    colision   **** GX  |   0 comporta   00BE R   |   0 comporta   008E R
+  0 comporta   00AB R   |     cpct_dis   **** GX  |     cpct_dra   **** GX
+    cpct_dra   **** GX  |     cpct_dra   **** GX  |     cpct_dra   **** GX
+    cpct_dra   **** GX  |     cpct_get   **** GX  |     cpct_isK   **** GX
+    cpct_sca   **** GX  |     cpct_set   **** GX  |     cpct_set   **** GX
+    cpct_set   **** GX  |     cpct_set   **** GX  |     cpct_wai   **** GX
+    draw_num   **** GX  |   0 draw_obj   00F8 GR  |     e_h     =  0005 
+    e_life  =  000A     |     e_sp_h  =  0007     |     e_sp_l  =  0006 
+    e_upd_h =  0009     |     e_upd_l =  0008     |     e_vx    =  0002 
+    e_vy    =  0003     |     e_w     =  0004     |     e_x     =  0000 
+    e_y     =  0001     |     end_leve   **** GX  |     ent_back   **** GX
+    ent_draw   **** GX  |     ent_isJu   **** GX  |     ent_upda   **** GX
+    hero_dat   **** GX  |     hero_dis   **** GX  |     hero_fal   **** GX
+    hero_jum   **** GX  |     hero_sho   **** GX  |     jumpCont   **** GX
+    k_max_nu=  0003     |     k_obj_si=  0008     |     level      **** GX
+  0 llave      0000 GR  |     llave_si=  0008     |   0 main_obj   00D8 GR
+    munition   **** GX  |   0 no_coge_   008D R   |   0 no_dibuj   00EC R
+  0 no_dibuj   010C R   |   0 no_es_ba   008D R   |   0 no_es_ll   0075 R
+  0 no_es_pu   0081 R   |   0 obj_aux =  00ED R   |   0 obj_aux2=  010D R
+  0 obj_draw   0018 R   |   0 obj_draw   0035 R   |     obj_h   =  0003 
+    obj_open=  0007     |     obj_sp_h=  0005     |     obj_sp_l=  0004 
+    obj_tipo=  0006     |   0 obj_vect   0000 R   |     obj_w   =  0002 
+    obj_x   =  0000     |     obj_y   =  0001     |     pos_y      **** GX
+  0 puerta     0008 GR  |     puerta_s=  0008     |     s_backgr   **** GX
+    s_h     =  0005     |     s_sp_h  =  0007     |     s_sp_l  =  0006 
+    s_vx    =  0002     |     s_vy    =  0003     |     s_w     =  0004 
+    s_x     =  0000     |     s_y     =  0001     |     shotCont   **** GX
+    shot_dat   **** GX  |     shot_dir   **** GX  |     startSho   **** GX
+    update_d   **** GX
+
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 2.
+Hexadecimal [16-Bits]
+
+Area Table
+
+   0 _CODE      size  118   flags    0
+

@@ -1,0 +1,21 @@
+DB stile_02
+DB 144,#80 or 8
+DB #80 or stile_02
+DB 224,#80 or 8
+DB stile_07
+DB 200,40
+DB 176,#80 or 104
+DB stile_11
+DB 144,0
+DB 224,0
+DB 144,120
+DB 224,#80 or 120
+DB stile_12
+DB 192,8
+DB 184,#80 or 24
+DB stile_15
+DB 152,120
+DB 232,#80 or 120
+DB stile_21
+DB 152,0
+DB 232,#80 or 0

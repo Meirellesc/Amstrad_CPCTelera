@@ -1,0 +1,361 @@
+ASxxxx Linker V03.00 + NoICE + sdld,  page 1.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+.  .ABS.                            00000000    00000000 =           0. bytes (ABS,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+     00000000  .__.ABS.                           cpct_strings
+     00000000  l__CABS                         
+     00000000  l__DABS                         
+     00000000  l__DATA                         
+     00000000  l__GSFINAL                      
+     00000000  l__GSINIT                       
+     00000000  l__HOME                         
+     00000000  l__INITIALIZED                  
+     00000000  l__INITIALIZER                  
+     00000000  s__CABS                         
+     00000000  s__DABS                         
+     00000006  k_plat_size                        cpct_keyboard
+     0000000D  k_enemy_size                       cpct_keyboard
+     00000040  s__CODE                         
+     00008A55  l__CODE                         
+     00008A95  s__DATA                         
+     00008A95  s__GSFINAL                      
+     00008A95  s__GSINIT                       
+     00008A95  s__HOME                         
+     00008A95  s__INITIALIZED                  
+     00008A95  s__INITIALIZER                  
+ASxxxx Linker V03.00 + NoICE + sdld,  page 2.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+_CODE                               00000040    00008A55 =       35413. bytes (REL,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+     00000040  _fin                               fin
+     00000810  _controls                          controls
+     00000FE0  _level8                            level8
+     000017B0  _level9                            level9
+     00001F80  _level10                           level10
+     00002750  _level2                            level2
+     00002F20  _level1                            level1
+     000036F0  _level0                            level0
+     00003EC0  _g_tileset                         tiles
+     00003EE4  _g_tiles_00                        tiles
+     00003EEC  _g_tiles_01                        tiles
+     00003EF4  _g_tiles_02                        tiles
+     00003EFC  _g_tiles_03                        tiles
+     00003F04  _g_tiles_04                        tiles
+     00003F0C  _g_tiles_05                        tiles
+     00003F14  _g_tiles_06                        tiles
+     00003F1C  _g_tiles_07                        tiles
+     00003F24  _g_tiles_08                        tiles
+     00003F2C  _g_tiles_09                        tiles
+     00003F34  _g_tiles_10                        tiles
+     00003F3C  _g_tiles_11                        tiles
+     00003F44  _g_tiles_12                        tiles
+     00003F4C  _g_tiles_13                        tiles
+     00003F54  _g_tiles_14                        tiles
+     00003F5C  _g_tiles_15                        tiles
+     00003F64  _g_tiles_16                        tiles
+     00003F6C  _g_tiles_17                        tiles
+     00003F74  _numbers_pal                       numbers
+     00003F84  _numbers_sp_00                     numbers
+     00003FA4  _numbers_sp_01                     numbers
+     00003FC4  _numbers_sp_02                     numbers
+     00003FE4  _numbers_sp_03                     numbers
+     00004004  _numbers_sp_04                     numbers
+     00004024  _numbers_sp_05                     numbers
+     00004044  _numbers_sp_06                     numbers
+     00004064  _numbers_sp_07                     numbers
+     00004084  _numbers_sp_08                     numbers
+     000040A4  _numbers_sp_09                     numbers
+     000040C4  _disparo_pal                       disparo
+     000040D4  _disparo_sp_0                      disparo
+     000040EC  _disparo_sp_1                      disparo
+     00004104  _bala_pal                          bala
+     00004114  _bala_sp                           bala
+     00004150  _puerta_pal                        puerta
+     00004160  _puerta_sp                         puerta
+     000041E0  _llave_pal                         llave
+     000041F0  _llave_sp                          llave
+     00004240  _eleccion_pal                      eleccion
+     00004250  _eleccion_sp                       eleccion
+     00004AE8  _GameOver_pal                      GameOver
+ASxxxx Linker V03.00 + NoICE + sdld,  page 3.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+_CODE                               00000040    00008A55 =       35413. bytes (REL,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+     00004AF8  _GameOver_sp                       GameOver
+     00004DC8  _fondotitulo_pal                   fondotitulo
+     00004DD8  _fondotitulo_sp                    fondotitulo
+     00005990  _title_pal                         title
+     000059A0  _title_sp                          title
+     00006558  _life_pal                          life
+     00006568  _life_sp                           life
+     00006588  _hero_pal                          heror
+     00006598  _hero_sp_00                        heror
+     000065F8  _hero_sp_01                        heror
+     00006658  _hero_sp_02                        heror
+     000066B8  _hero_sp_03                        heror
+     00006718  _hero_sp_04                        heror
+     00006778  _hero_sp_05                        heror
+     000067D8  _hero_sp_06                        heror
+     00006838  _hero_sp_07                        heror
+     00006898  _hero_sp_08                        heror
+     000068F8  _hero_sp_09                        heror
+     00006958  _hero_sp_10                        heror
+     000069B8  _hero_sp_11                        heror
+     00006A18  _fondo1_pal                        fondo1
+     00006A28  _fondo1_sp                         fondo1
+     00006AC8  _robot_pal                         robotr
+     00006AD8  _robot_sp_0                        robotr
+     00006B38  _robot_sp_1                        robotr
+     00006B98  _level3                            level3
+     00007368  level                              cpct_keyboard
+     00007369  end_level                          cpct_keyboard
+     0000736A  cargar_nivel                       cpct_keyboard
+     00007386  cargar_nivel2                      cpct_keyboard
+     000073A2  cargar_nivel3                      cpct_keyboard
+     000073BE  carga_todo                         cpct_keyboard
+     00007434  carga_fondos                       cpct_keyboard
+     00007495  colision                           cpct_keyboard
+     00007496  colision_borde                     cpct_keyboard
+     00007497  colision_check                     cpct_keyboard
+     000074D3  colision_check_ex                  cpct_keyboard
+     0000750F  colision_check_border              cpct_keyboard
+     000075A1  colision_enemy_platform            cpct_keyboard
+     00007607  shot_data                          cpct_keyboard
+     0000760F  hero_shot                          cpct_keyboard
+     00007610  shot_direction                     cpct_keyboard
+     00007612  munition                           cpct_keyboard
+     00007615  startShot                          cpct_keyboard
+     0000768F  shotControl                        cpct_keyboard
+     00007715  s_background                       cpct_keyboard
+     0000774F  enemy_data0                        cpct_keyboard
+     0000774F  enemy_vector                       cpct_keyboard
+     0000775C  enemy_data1                        cpct_keyboard
+     00007769  enemy_data2                        cpct_keyboard
+     00007776  enemy_data3                        cpct_keyboard
+ASxxxx Linker V03.00 + NoICE + sdld,  page 4.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+_CODE                               00000040    00008A55 =       35413. bytes (REL,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+     00007783  enemy_data4                        cpct_keyboard
+     00007790  init_enemy                         cpct_keyboard
+     00007791  pos_y_en                           cpct_keyboard
+     000077F3  enemy_interaction                  cpct_keyboard
+     00007961  hero_data                          cpct_keyboard
+     00007979  hero_jump                          cpct_keyboard
+     0000797A  hero_fall                          cpct_keyboard
+     00007982  pos_y                              cpct_keyboard
+     00007993  ent_update                         cpct_keyboard
+     000079A6  jumpControl                        cpct_keyboard
+     00007AB1  ent_draw                           cpct_keyboard
+     00007ACE  ent_background                     cpct_keyboard
+     00007AEB  ent_isJumping_or_canFall           cpct_keyboard
+     00007B05  update_draw_life                   cpct_keyboard
+     00007B64  hero_dispara                       cpct_keyboard
+     00007C66  multiplicar_2                      
+     00007C68  multiplicar_4                      
+     00007C78  dividir_2                          
+     00007C8F  dividir_4                          
+     00007CBB  n_plat                             
+     00007CBC  n_enem                             
+     00007CBD  hero_x                             
+     00007CBE  hero_y                             
+     00007CBF  load_level0                        
+     00007D61  load_level1                        
+     00007DF7  load_level2                        
+     00007E97  load_level3                        
+     00007F3A  load_level8                        
+     0000806D  load_level9                        
+     0000813A  load_level10                       
+     00008218  _cpct_keyboardStatusBuffer         cpct_keyboard
+     00008222  _main                              cpct_keyboard
+     000083A8  draw_numbers                       
+     000083C6  llave                              
+     000083CE  puerta                             
+     000083D6  bala                               
+     0000849E  main_obj                           
+     000084BE  draw_obj                           
+     000084DE  platform_datas                     cpct_keyboard
+     000084E4  platform_data                      cpct_keyboard
+     000084EA  platform_data2                     cpct_keyboard
+     000084F0  platform_data3                     cpct_keyboard
+     000084F6  platform_data4                     cpct_keyboard
+     000084FC  platform_data5                     cpct_keyboard
+     00008502  platform_data6                     cpct_keyboard
+     00008508  platform_data7                     cpct_keyboard
+     0000850E  platform_data8                     cpct_keyboard
+     00008514  platform_data9                     cpct_keyboard
+     0000851A  platform_data10                    cpct_keyboard
+     00008520  platform_data11                    cpct_keyboard
+     00008560  ent_fall                           cpct_keyboard
+ASxxxx Linker V03.00 + NoICE + sdld,  page 5.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+_CODE                               00000040    00008A55 =       35413. bytes (REL,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+     000085B2  plat_checkAll                      cpct_keyboard
+     000085D3  plat_checkAll_border               cpct_keyboard
+     000085F4  check_platform_enemy               cpct_keyboard
+     0000865C  cargar_GameOver                    cpct_keyboard
+     00008688  cargar_titulo                      cpct_keyboard
+     000086CD  _cpct_isKeyPressed                 cpct_keyboard
+     000086CD  cpct_isKeyPressed_asm              cpct_keyboard
+     000086D9  cpct_setPalette_asm                cpct_video
+     000086EC  cpct_setPALColour_asm              cpct_video
+     000086F6  cpct_drawStringM0_asm              cpct_strings
+     0000871C  cpct_drawCharM0_inner_asm          cpct_strings
+     0000877C  dc_2pxtableM0                      cpct_strings
+     00008780  cpct_drawSprite_asm                cpct_sprites
+     00008820  cpct_etm_drawTileBox2x4_asm        cpct_easytilemaps
+     000088AC  _cpct_etm_setTileset2x4            cpct_easytilemaps
+     000088AC  cpct_etm_setTileset2x4_asm         cpct_easytilemaps
+     000088B0  _cpct_etm_drawTileRow2x4           cpct_easytilemaps
+     000088B7  cpct_etm_drawTileRow2x4_asm        cpct_easytilemaps
+     000088B9  dtr_restore_ptileset               cpct_easytilemaps
+     000088D1  cpct_drawSpriteMasked_asm          cpct_sprites
+     000088FB  _cpct_waitVSYNC                    cpct_video
+     000088FB  cpct_waitVSYNC_asm                 cpct_video
+     00008903  cpct_setVideoMode_asm              cpct_video
+     00008910  _cpct_disableFirmware              cpct_firmware
+     00008910  _cpct_removeInterruptHandler       cpct_firmware
+     00008910  cpct_disableFirmware_asm           cpct_firmware
+     00008910  cpct_removeInterruptHandler_asm    cpct_firmware
+     00008920  cpct_drawSolidBox_asm              cpct_sprites
+     000089CC  cpct_drawTileAligned2x4_f_asm      cpct_sprites
+     000089ED  cpct_drawSpriteBlended_asm         cpct_sprites
+     000089F3  _cpct_dsb_blendFunction            cpct_sprites
+     00008A14  _cpct_mode_rom_status              cpct_firmware
+     00008A15  cpct_setDrawCharM0_asm             cpct_strings
+     00008A38  cpct_getScreenPtr_asm              cpct_video
+     00008A54  _cpct_scanKeyboard                 cpct_keyboard
+     00008A54  cpct_scanKeyboard_asm              cpct_keyboard
+     00008A85  dc_mode0_ct                        cpct_strings
+ASxxxx Linker V03.00 + NoICE + sdld,  page 6.
+
+Files Linked                              [ module(s) ]
+
+obj/levels/fin.rel                        [ fin ]
+obj/levels/controls.rel                   [ controls ]
+obj/levels/level8.rel                     [ level8 ]
+obj/levels/level9.rel                     [ level9 ]
+obj/levels/level10.rel                    [ level10 ]
+obj/levels/level2.rel                     [ level2 ]
+obj/levels/level1.rel                     [ level1 ]
+obj/levels/level0.rel                     [ level0 ]
+obj/sprites/tiles.rel                     [ tiles ]
+obj/sprites/numbers.rel                   [ numbers ]
+obj/sprites/disparo.rel                   [ disparo ]
+obj/sprites/bala.rel                      [ bala ]
+obj/sprites/puerta.rel                    [ puerta ]
+obj/sprites/llave.rel                     [ llave ]
+obj/sprites/eleccion.rel                  [ eleccion ]
+obj/sprites/GameOver.rel                  [ GameOver ]
+obj/sprites/fondotitulo.rel               [ fondotitulo ]
+obj/sprites/title.rel                     [ title ]
+obj/sprites/life.rel                      [ life ]
+obj/sprites/heror.rel                     [ heror ]
+obj/sprites/fondo1.rel                    [ fondo1 ]
+obj/sprites/robotr.rel                    [ robotr ]
+obj/levels/level3.rel                     [ level3 ]
+obj/cargar_level.h.rel                    [  ]
+obj/cargar_level.rel                      [ cpct_keyboard ]
+obj/colision.h.rel                        [  ]
+obj/colision.rel                          [ cpct_keyboard ]
+obj/disparo.h.rel                         [  ]
+obj/disparo.rel                           [ cpct_keyboard ]
+obj/enemy.h.rel                           [  ]
+obj/enemy.rel                             [ cpct_keyboard ]
+obj/entity.h.rel                          [  ]
+obj/entity.rel                            [ cpct_keyboard ]
+obj/funciones_mat.h.rel                   [  ]
+obj/funciones_mat.rel                     [  ]
+obj/load_level.h.rel                      [  ]
+obj/load_level.rel                        [  ]
+obj/main.h.rel                            [  ]
+obj/main.rel                              [ cpct_keyboard ]
+obj/numbers.h.rel                         [  ]
+obj/numbers.rel                           [  ]
+obj/objects.h.rel                         [  ]
+obj/objects.rel                           [  ]
+obj/platform.h.rel                        [  ]
+obj/platform.rel                          [ cpct_keyboard ]
+obj/titulo.h.rel                          [  ]
+obj/titulo.rel                            [ cpct_keyboard ]
+
+
+Libraries Linked                          [ object file ]
+
+/Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_isKeyPressed.rel ]
+/Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_setPalette_asmbindings.rel ]
+/Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_setPALColour_asmbindings.re ]
+/Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_drawStringM0_asmbindings.re ]
+/Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_drawCharM0_inner.rel ]
+/Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_drawSprite_asmbindings.rel ]
+/Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_etm_drawTileBox2x4_asmbindi ]
+/Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_etm_setTileset2x4.rel ]
+/Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_etm_drawTileRow2x4.rel ]
+/Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_drawSpriteMasked_asmbinding ]
+/Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_waitVSYNC.rel ]
+/Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_setVideoMode_asmbindings.re ]
+/Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_removeInterruptHandler.rel ]
+/Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_drawSolidBox_asmbindings.re ]
+/Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_drawTileAligned2x4_f_asmbin ]
+/Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_drawSpriteBlended_asmbindin ]
+/Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpc_mode_rom_status.rel ]
+/Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_setDrawCharM0_asmbindings.r ]
+/Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_getScreenPtr_asmbindings.re ]
+/Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_scanKeyboard.rel ]
+/Users/jorgemarcoesteve/Documents/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_dc_mode0_ct.rel ]
+
+ASxxxx Linker V03.00 + NoICE + sdld,  page 7.
+
+User Base Address Definitions
+
+_CODE = 0x0040
+_DATA = 0x0000
+
+

@@ -1,0 +1,15 @@
+XL2
+H 1 areas C global symbols
+S ent_background Ref0000
+S hero_jump Ref0000
+S update_draw_life Ref0000
+S ent_draw Ref0000
+S jumpControl Ref0000
+S .__.ABS. Def0000
+S hero_data Ref0000
+S ent_update Ref0000
+S pos_y Ref0000
+S hero_fall Ref0000
+S ent_isJumping_or_canFall Ref0000
+S hero_dispara Ref0000
+A _CODE size 0 flags 0 addr 0

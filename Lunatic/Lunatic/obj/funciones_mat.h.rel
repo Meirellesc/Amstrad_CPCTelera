@@ -1,0 +1,8 @@
+XL2
+H 1 areas 5 global symbols
+S .__.ABS. Def0000
+S multiplicar_2 Ref0000
+S multiplicar_4 Ref0000
+S dividir_2 Ref0000
+S dividir_4 Ref0000
+A _CODE size 0 flags 0 addr 0

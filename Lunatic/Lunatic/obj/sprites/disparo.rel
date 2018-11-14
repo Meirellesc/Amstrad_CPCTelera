@@ -1,0 +1,35 @@
+XL2
+H 9 areas 4 global symbols
+M disparo
+O -mz80
+S .__.ABS. Def0000
+A _CODE size 40 flags 0 addr 0
+S _disparo_sp_0 Def0010
+S _disparo_sp_1 Def0028
+S _disparo_pal Def0000
+A _DATA size 0 flags 0 addr 0
+A _INITIALIZED size 0 flags 0 addr 0
+A _DABS size 0 flags 8 addr 0
+A _HOME size 0 flags 0 addr 0
+A _GSINIT size 0 flags 0 addr 0
+A _GSFINAL size 0 flags 0 addr 0
+A _INITIALIZER size 0 flags 0 addr 0
+A _CABS size 0 flags 8 addr 0
+T 00 00
+R 00 00 00 00
+T 00 00 54 44 55 5C 58 5D 4C 45 4D 5E 40 5F 4E 47
+R 00 00 00 00
+T 0E 00 4F 53
+R 00 00 00 00
+T 10 00
+R 00 00 00 00
+T 10 00 00 00 00 00 33 33 22 00 36 3C 28 00 36 3C
+R 00 00 00 00
+T 1E 00 28 00 33 33 22 00 00 00 00 00
+R 00 00 00 00
+T 28 00
+R 00 00 00 00
+T 28 00 00 00 00 00 00 11 33 33 00 14 3C 39 00 14
+R 00 00 00 00
+T 36 00 3C 39 00 11 33 33 00 00 00 00
+R 00 00 00 00

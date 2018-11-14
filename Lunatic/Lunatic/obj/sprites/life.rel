@@ -1,0 +1,30 @@
+XL2
+H 9 areas 3 global symbols
+M life
+O -mz80
+S .__.ABS. Def0000
+A _CODE size 30 flags 0 addr 0
+S _life_sp Def0010
+S _life_pal Def0000
+A _DATA size 0 flags 0 addr 0
+A _INITIALIZED size 0 flags 0 addr 0
+A _DABS size 0 flags 8 addr 0
+A _HOME size 0 flags 0 addr 0
+A _GSINIT size 0 flags 0 addr 0
+A _GSFINAL size 0 flags 0 addr 0
+A _INITIALIZER size 0 flags 0 addr 0
+A _CABS size 0 flags 8 addr 0
+T 00 00
+R 00 00 00 00
+T 00 00 54 44 55 5C 58 5D 4C 45 4D 5E 40 5F 4E 47
+R 00 00 00 00
+T 0E 00 4F 53
+R 00 00 00 00
+T 10 00
+R 00 00 00 00
+T 10 00 44 88 CC 00 9C 6C 3C 88 9C 3C 3C 88 9C 3C
+R 00 00 00 00
+T 1E 00 3C 88 44 3C 6C 00 00 9C 88 00 00 44 00 00
+R 00 00 00 00
+T 2C 00 00 00 00 00
+R 00 00 00 00

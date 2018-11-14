@@ -1,0 +1,70 @@
+ASxxxx Linker V03.00 + NoICE + sdld,  page 1.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+.  .ABS.                            00000000    00000000 =           0. bytes (ABS,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+     00000000  .__.ABS.                           cpct_firmware
+     00000000  l__CABS                         
+     00000000  l__DABS                         
+     00000000  l__DATA                         
+     00000000  l__GSFINAL                      
+     00000000  l__GSINIT                       
+     00000000  l__HOME                         
+     00000000  l__INITIALIZED                  
+     00000000  l__INITIALIZER                  
+     00000000  s__CABS                         
+     00000000  s__DABS                         
+     0000097C  l__CODE                         
+     00004000  s__CODE                         
+     0000497C  s__DATA                         
+     0000497C  s__GSFINAL                      
+     0000497C  s__GSINIT                       
+     0000497C  s__HOME                         
+     0000497C  s__INITIALIZED                  
+     0000497C  s__INITIALIZER                  
+
+ASxxxx Linker V03.00 + NoICE + sdld,  page 2.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+_CODE                               00004000    0000097C =        2428. bytes (REL,CON)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+     00004000  _palette                           palette
+     00004010  _Start_2px_pack                    
+     00004967  _main                              cpct_keyboard
+     0000496C  _cpct_disableFirmware              cpct_firmware
+     0000496C  _cpct_removeInterruptHandler       cpct_firmware
+     0000496C  cpct_disableFirmware_asm           cpct_firmware
+     0000496C  cpct_removeInterruptHandler_asm    cpct_firmware
+
+ASxxxx Linker V03.00 + NoICE + sdld,  page 3.
+
+Files Linked                              [ module(s) ]
+
+obj/palette.rel                           [ palette ]
+obj/Start_2px_pack.rel                    [  ]
+obj/Start_2px.h.rel                       [  ]
+obj/tiles.h.rel                           [  ]
+obj/main.rel                              [ cpct_keyboard ]
+
+
+Libraries Linked                          [ object file ]
+
+/home/meirelles/cpctelera/cpctelera/cpctelera.lib
+                                          [ cpct_removeInterruptHandler.rel ]
+
+ASxxxx Linker V03.00 + NoICE + sdld,  page 4.
+
+User Base Address Definitions
+
+_CODE = 0x4000
+_DATA = 0x0000
+
+

@@ -1,0 +1,11 @@
+"Basket Cases" por César Nicolás González (CNGSOFT)
+
+Estoy escribiendo estas notas a menos de veinte minutos de la hora de entrega. Hay muchos errores, muchos problemas; prometo que haré una versión corregida tan pronto como las cosas se calmen mínimamente.
+
+Lo que no es obra de un servidor es:
+
+- el ensamblador AS80, de Frank A. Kingswood.
+- Serena (que hace un cameo) y la segunda canción de "Phantis" (de la que hago una versión tosca), de Dinamic.
+- las canciones del menú y de los partidos, adaptaciones muy libres (y un pelín desastrosas) de dos canciones de David Whittaker, una de ellas a su vez versión de la canción americana popular "Buffalo Gals".
+
+Si tienen alguna duda o surge algún imprevisto les ruego que me escriban a cngsoft@gmail.com ; muchas gracias de antemano por su atención.

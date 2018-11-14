@@ -1,0 +1,30 @@
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 1.
+Hexadecimal [16-Bits]
+
+Symbol Table
+
+    .__.$$$.=  2710 L   |     .__.ABS.=  0000 G   |     .__.CPU.=  0000 L
+    .__.H$L.=  0000 L   |     cpct_dis   **** GX  |     cpct_dra   **** GX
+    cpct_dra   **** GX  |     cpct_dra   **** GX  |     cpct_dra   **** GX
+    cpct_get   **** GX  |     cpct_isK   **** GX  |     cpct_sca   **** GX
+    cpct_set   **** GX  |     cpct_set   **** GX  |     cpct_set   **** GX
+    cpct_set   **** GX  |     cpct_wai   **** GX  |   0 divide     002F R
+  0 divide2    0018 R   |   0 dividir_   0013 GR  |   0 dividir_   002A GR
+    e_h     =  0005     |     e_life  =  000A     |     e_sp_h  =  0007 
+    e_sp_l  =  0006     |     e_upd_h =  0009     |     e_upd_l =  0008 
+    e_vx    =  0002     |     e_vy    =  0003     |     e_w     =  0004 
+    e_x     =  0000     |     e_y     =  0001     |     ent_back   **** GX
+    ent_draw   **** GX  |     ent_isJu   **** GX  |     ent_upda   **** GX
+  0 fin_div    0054 R   |   0 fin_div2   0028 R   |     hero_dat   **** GX
+    hero_dis   **** GX  |     hero_fal   **** GX  |     hero_jum   **** GX
+    jumpCont   **** GX  |   0 multipli   0008 R   |   0 multipli   0001 GR
+  0 multipli   0003 GR  |     pos_y      **** GX  |   0 posicion   0000 R
+    update_d   **** GX
+
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 2.
+Hexadecimal [16-Bits]
+
+Area Table
+
+   0 _CODE      size   56   flags    0
+

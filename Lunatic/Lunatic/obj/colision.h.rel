@@ -1,0 +1,10 @@
+XL2
+H 1 areas 7 global symbols
+S colision_borde Ref0000
+S colision_check_border Ref0000
+S .__.ABS. Def0000
+S colision Ref0000
+S colision_enemy_platform Ref0000
+S colision_check_ex Ref0000
+S colision_check Ref0000
+A _CODE size 0 flags 0 addr 0

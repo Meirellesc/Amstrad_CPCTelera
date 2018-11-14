@@ -1,0 +1,146 @@
+XL2
+H 1 areas 30 global symbols
+M cpct_keyboard
+S platform_data11 Ref0000
+S plat_checkAll_border Ref0000
+S cpct_setPalette_asm Ref0000
+S cpct_isKeyPressed_asm Ref0000
+S ent_fall Ref0000
+S ent_background Ref0000
+S cpct_setPALColour_asm Ref0000
+S hero_jump Ref0000
+S cpct_drawStringM0_asm Ref0000
+S cpct_drawSprite_asm Ref0000
+S update_draw_life Ref0000
+S platform_data2 Ref0000
+S platform_data3 Ref0000
+S platform_datas Ref0000
+S platform_data4 Ref0000
+S platform_data5 Ref0000
+S platform_data6 Ref0000
+S ent_draw Ref0000
+S k_plat_size Ref0000
+S platform_data7 Ref0000
+S platform_data8 Ref0000
+S platform_data9 Ref0000
+S jumpControl Ref0000
+S platform_data Ref0000
+S .__.ABS. Def0000
+S cpct_drawSpriteMasked_asm Ref0000
+S plat_checkAll Ref0000
+S hero_data Ref0000
+S ent_update Ref0000
+S pos_y Ref0000
+S hero_fall Ref0000
+S ent_isJumping_or_canFall Ref0000
+S hero_dispara Ref0000
+S cpct_setVideoMode_asm Ref0000
+S cpct_waitVSYNC_asm Ref0000
+S cpct_disableFirmware_asm Ref0000
+S cpct_drawSolidBox_asm Ref0000
+S cpct_setDrawCharM0_asm Ref0000
+S check_platform_enemy Ref0000
+S platform_data10 Ref0000
+S cpct_scanKeyboard_asm Ref0000
+S cpct_getScreenPtr_asm Ref0000
+A _CODE size 14C flags 0 addr 0
+S colision_borde Def0001
+S colision_check_border Def007A
+S colision Def0000
+S colision_enemy_platform Def010C
+S colision_check_ex Def003E
+S colision_check Def0002
+T 00 00 FF FF
+R 00 00 00 00
+T 02 00
+R 00 00 00 00
+T 02 00 DD 7E 00 DD 86 04 FD 96 00 FA 38 00 FD 7E
+R 00 00 00 00 00 0C 00 00
+T 10 00 00 FD 86 04 DD 96 00 FA 38 00 FD 7E 01 FD
+R 00 00 00 00 00 0A 00 00
+T 1E 00 86 05 DD 96 01 FA 38 00 DD 7E 01 DD 86 05
+R 00 00 00 00 00 08 00 00
+T 2C 00 FD 96 01 FA 38 00 3E 01 32 00 00 C9
+R 00 00 00 00 00 06 00 00 00 0B 00 00
+T 38 00
+R 00 00 00 00
+T 38 00 3E FF 32 00 00 C9
+R 00 00 00 00 00 05 00 00
+T 3E 00
+R 00 00 00 00
+T 3E 00 FD 7E 00 FD 86 04 DD 96 00 FA 74 00 DD 7E
+R 00 00 00 00 00 0C 00 00
+T 4C 00 00 DD 86 02 FD 96 00 FA 74 00 DD 7E 01 DD
+R 00 00 00 00 00 0A 00 00
+T 5A 00 86 03 FD 96 01 FA 74 00 FD 7E 01 FD 86 05
+R 00 00 00 00 00 08 00 00
+T 68 00 DD 96 01 FA 74 00 3E 01 32 00 00 C9
+R 00 00 00 00 00 06 00 00 00 0B 00 00
+T 74 00
+R 00 00 00 00
+T 74 00 3E FF 32 00 00 C9
+R 00 00 00 00 00 05 00 00
+T 7A 00
+R 00 00 00 00
+T 7A 00 FD 7E 01 FD 86 05 DD 96 01 FA 06 01 DD 7E
+R 00 00 00 00 00 0C 00 00
+T 88 00 01 DD 86 05 D6 02 FD 96 01 FA 06 01 FD 7E
+R 00 00 00 00 00 0C 00 00
+T 96 00 00 DD 96 00 FA A0 00 C3 AF 00
+R 00 00 00 00 00 07 00 00 00 0A 00 00
+T A0 00
+R 00 00 00 00
+T A0 00 DD 7E 00 DD 86 04 FD 96 00 FD 96 04 FA
+R 00 00 00 00
+T AD 00 DA 00
+R 00 00 00 00 00 02 00 00
+T AF 00
+R 00 00 00 00
+T AF 00 FD 7E 00 D6 01 DD 96 00 DD 96 04 FA C0 00
+R 00 00 00 00 00 0E 00 00
+T BD 00 C3 06 01
+R 00 00 00 00 00 03 00 00
+T C0 00
+R 00 00 00 00
+T C0 00 DD 7E 00 FD 96 00 FA FA 00 DD 7E 00 D6 01
+R 00 00 00 00 00 09 00 00
+T CE 00 FD 96 00 FD 96 04 FA E8 00 C3 06 01
+R 00 00 00 00 00 09 00 00 00 0C 00 00
+T DA 00
+R 00 00 00 00
+T DA 00 3E 03 32 01 00 3E FF 32 00 00 CD 00 00 C9
+R 00 00 00 00 00 05 00 00 02 0A 07 00 02 0D 1A 00
+T E8 00
+R 00 00 00 00
+T E8 00 FD 7E 00 FD 86 04 DD 96 00 DD 96 04 FA
+R 00 00 00 00
+T F5 00 00 01 C3 06 01
+R 00 00 00 00 00 02 00 00 00 05 00 00
+T FA 00
+R 00 00 00 00
+T FA 00 3E 01 32 01 00 C9
+R 00 00 00 00 00 05 00 00
+T 00 01
+R 00 00 00 00
+T 00 01 3E 02 32 01 00 C9
+R 00 00 00 00 00 05 00 00
+T 06 01
+R 00 00 00 00
+T 06 01 3E FF 32 01 00 C9
+R 00 00 00 00 00 05 00 00
+T 0C 01
+R 00 00 00 00
+T 0C 01 FD 7E 01 FD 86 05 DD 96 01 FA 46 01 DD 7E
+R 00 00 00 00 00 0C 00 00
+T 1A 01 01 DD 86 05 FD 96 01 FA 46 01 FD 7E 00 C6
+R 00 00 00 00 00 0A 00 00
+T 28 01 01 DD 96 00 FA 46 01 DD 7E 00 DD 86 04 D6
+R 00 00 00 00 00 07 00 00
+T 36 01 01 FD 96 00 FD 96 04 FA 46 01 3E 01 FD 77
+R 00 00 00 00 00 0A 00 00
+T 44 01 0B C9
+R 00 00 00 00
+T 46 01
+R 00 00 00 00
+T 46 01 3E FF FD 77 0B C9
+R 00 00 00 00

@@ -1,0 +1,21 @@
+XL2
+H 1 areas 12 global symbols
+S platform_data11 Ref0000
+S plat_checkAll_border Ref0000
+S ent_fall Ref0000
+S platform_data2 Ref0000
+S platform_data3 Ref0000
+S platform_datas Ref0000
+S platform_data4 Ref0000
+S platform_data5 Ref0000
+S platform_data6 Ref0000
+S k_plat_size Ref0000
+S platform_data7 Ref0000
+S platform_data8 Ref0000
+S platform_data9 Ref0000
+S platform_data Ref0000
+S .__.ABS. Def0000
+S plat_checkAll Ref0000
+S check_platform_enemy Ref0000
+S platform_data10 Ref0000
+A _CODE size 0 flags 0 addr 0

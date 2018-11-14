@@ -1,0 +1,3 @@
+If you want to compile the game you need to install CPCTelera-1.4.1 and WinApe 2.0 Beta 2.
+
+When you have the programs you can now try the game in your computer.

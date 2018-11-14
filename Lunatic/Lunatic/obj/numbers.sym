@@ -1,0 +1,32 @@
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 1.
+Hexadecimal [16-Bits]
+
+Symbol Table
+
+    .__.$$$.=  2710 L   |     .__.ABS.=  0000 G   |     .__.CPU.=  0000 L
+    .__.H$L.=  0000 L   |     _numbers   **** GX  |     _numbers   **** GX
+    _numbers   **** GX  |     _numbers   **** GX  |     _numbers   **** GX
+    _numbers   **** GX  |     _numbers   **** GX  |     _numbers   **** GX
+    _numbers   **** GX  |     _numbers   **** GX  |     cpct_dis   **** GX
+    cpct_dra   **** GX  |     cpct_dra   **** GX  |     cpct_dra   **** GX
+    cpct_dra   **** GX  |     cpct_dra   **** GX  |     cpct_get   **** GX
+    cpct_isK   **** GX  |     cpct_sca   **** GX  |     cpct_set   **** GX
+    cpct_set   **** GX  |     cpct_set   **** GX  |     cpct_set   **** GX
+    cpct_wai   **** GX  |   0 draw_num   00C3 GR  |     hero_sho   **** GX
+    munition   **** GX  |   0 nocero     0017 R   |   0 nocinco    007B R
+  0 nocuatro   0067 R   |   0 nodos      003F R   |   0 noocho     00B7 R
+  0 noseis     008F R   |   0 nosiete    00A3 R   |   0 notres     0053 R
+  0 nouno      002B R   |     s_backgr   **** GX  |     s_h     =  0005 
+    s_sp_h  =  0007     |     s_sp_l  =  0006     |     s_vx    =  0002 
+    s_vy    =  0003     |     s_w     =  0004     |     s_x     =  0000 
+    s_y     =  0001     |   0 selectNu   0003 R   |     shotCont   **** GX
+    shot_dat   **** GX  |     shot_dir   **** GX  |     startSho   **** GX
+  0 thenumbe   0000 R   |   0 thenumbe   0002 R   |   0 thenumbe   0001 R
+
+ASxxxx Assembler V02.00 + NoICE + SDCC mods  (Zilog Z80 / Hitachi HD64180), page 2.
+Hexadecimal [16-Bits]
+
+Area Table
+
+   0 _CODE      size   E1   flags    0
+

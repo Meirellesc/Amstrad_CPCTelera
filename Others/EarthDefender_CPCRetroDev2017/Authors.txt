@@ -1,0 +1,28 @@
+Videogame developed by:
+	Thomás Cafaro Fernandez
+	Marta Tirado Asencio
+	Jorge García Valera
+
+Music:
+	Main theme - Created by	Thomás Cafaro Fernandez
+
+Graphics:
+	Player's ship	- Created by Marta Tirado Asencio
+	Enemy's ship	- Created by Marta Tirado Asencio
+	Player's shot	- Created by Marta Tirado Asencio
+
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*+*
+
+Videojuego desarrollado por:
+	Thomás Cafaro Fernandez
+	Marta Tirado Asencio
+	Jorge García Valera
+
+Musica:
+	Tema principal 	- Creado por Thomás Cafaro Fernandez
+
+Gráficos:
+	Nave del jugador- Creado por Marta Tirado Asencio
+	Nave enemiga 	- Creado por Marta Tirado Asencio
+	Disparo jugador - Creado por Marta Tirado Asencio

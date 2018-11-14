@@ -1,0 +1,29 @@
+﻿Name: Lunatic
+Game model: Bubble Bobble
+
+
+Players:
+* Hero
+Enemies: 
+* Static enemies
+Objects:
+* Coins
+* Doors
+* Key
+
+
+To do:
+* Jorge
+   * Correct jump
+   * Structures
+   * Gravity
+   * Falls
+
+
+* Gema
+   * Enemy
+   * Die
+
+
+* Lucas
+   * Shoots

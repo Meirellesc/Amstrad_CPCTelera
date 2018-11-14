@@ -1,0 +1,11 @@
+XL2
+H 1 areas 8 global symbols
+S carga_todo Ref0000
+S level Ref0000
+S .__.ABS. Def0000
+S cargar_nivel2 Ref0000
+S cargar_nivel3 Ref0000
+S carga_fondos Ref0000
+S cargar_nivel Ref0000
+S end_level Ref0000
+A _CODE size 0 flags 0 addr 0

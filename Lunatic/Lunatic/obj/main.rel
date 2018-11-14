@@ -1,0 +1,162 @@
+XL2
+H 2 areas 5B global symbols
+M cpct_keyboard
+S platform_data11 Ref0000
+S k_enemy_size Ref0000
+S plat_checkAll_border Ref0000
+S cpct_setPalette_asm Ref0000
+S cpct_isKeyPressed_asm Ref0000
+S hero_x Ref0000
+S ent_fall Ref0000
+S hero_y Ref0000
+S cpct_setPALColour_asm Ref0000
+S ent_background Ref0000
+S load_level0 Ref0000
+S enemy_data0 Ref0000
+S draw_obj Ref0000
+S load_level1 Ref0000
+S enemy_data1 Ref0000
+S draw_numbers Ref0000
+S load_level2 Ref0000
+S enemy_data2 Ref0000
+S hero_jump Ref0000
+S load_level3 Ref0000
+S enemy_data3 Ref0000
+S hero_shot Ref0000
+S enemy_data4 Ref0000
+S colision_borde Ref0000
+S cpct_drawStringM0_asm Ref0000
+S startShot Ref0000
+S cpct_drawSprite_asm Ref0000
+S load_level8 Ref0000
+S update_draw_life Ref0000
+S load_level9 Ref0000
+S enemy_vector Ref0000
+S platform_data2 Ref0000
+S platform_data3 Ref0000
+S platform_datas Ref0000
+S platform_data4 Ref0000
+S carga_todo Ref0000
+S platform_data5 Ref0000
+S platform_data6 Ref0000
+S ent_draw Ref0000
+S k_plat_size Ref0000
+S platform_data7 Ref0000
+S platform_data8 Ref0000
+S platform_data9 Ref0000
+S level Ref0000
+S colision_check_border Ref0000
+S pos_y_en Ref0000
+S enemy_interaction Ref0000
+S jumpControl Ref0000
+S shot_direction Ref0000
+S platform_data Ref0000
+S .__.ABS. Def0000
+S cargar_nivel2 Ref0000
+S shotControl Ref0000
+S cargar_nivel3 Ref0000
+S colision Ref0000
+S _robot_pal Ref0000
+S colision_enemy_platform Ref0000
+S cpct_drawSpriteMasked_asm Ref0000
+S cargar_GameOver Ref0000
+S carga_fondos Ref0000
+S plat_checkAll Ref0000
+S hero_data Ref0000
+S ent_update Ref0000
+S pos_y Ref0000
+S hero_fall Ref0000
+S ent_isJumping_or_canFall Ref0000
+S cargar_nivel Ref0000
+S end_level Ref0000
+S cargar_titulo Ref0000
+S init_enemy Ref0000
+S cpct_setVideoMode_asm Ref0000
+S cpct_waitVSYNC_asm Ref0000
+S hero_dispara Ref0000
+S n_enem Ref0000
+S s_background Ref0000
+S munition Ref0000
+S shot_data Ref0000
+S load_level10 Ref0000
+S colision_check_ex Ref0000
+S cpct_disableFirmware_asm Ref0000
+S cpct_drawSolidBox_asm Ref0000
+S colision_check Ref0000
+S n_plat Ref0000
+S cpct_setDrawCharM0_asm Ref0000
+S main_obj Ref0000
+S check_platform_enemy Ref0000
+S platform_data10 Ref0000
+S cpct_scanKeyboard_asm Ref0000
+S cpct_getScreenPtr_asm Ref0000
+A _CODE size CD flags 0 addr 0
+S _main Def000A
+S _cpct_keyboardStatusBuffer Def0000
+A _DATA size 0 flags 0 addr 0
+T 00 00 FF FF FF FF FF FF FF FF FF FF
+R 00 00 00 00
+T 0A 00
+R 00 00 00 00
+T 0A 00 CD 00 00 0E 00 CD 00 00 21 00 00 11 10 00
+R 00 00 00 00 02 03 4F 00 02 08 46 00 02 0B 37 00
+T 18 00 CD 00 00 21 10 14 CD 00 00
+R 00 00 00 00 02 03 03 00 02 09 08 00
+T 21 00
+R 00 00 00 00
+T 21 00 3E 00 32 00 00 CD 00 00 DD 21 00 00 3E 03
+R 00 00 00 00 02 05 2B 00 02 08 42 00 02 0C 3D 00
+T 2F 00 DD 77 0A
+R 00 00 00 00
+T 32 00
+R 00 00 00 00
+T 32 00 CD 00 00
+R 00 00 00 00 02 03 35 00
+T 35 00
+R 00 00 00 00
+T 35 00 CD 00 00 CD 00 00 21 07 40 CD 00 00 28 12
+R 00 00 00 00 02 03 57 00 02 06 44 00 02 0C 04 00
+T 43 00
+R 00 00 00 00
+T 43 00 CD 00 00 CD 00 00 21 07 40 CD 00 00 CA
+R 00 00 00 00 02 03 33 00 02 06 57 00 02 0C 04 00
+T 50 00 32 00 C3 43 00
+R 00 00 00 00 00 02 00 00 00 05 00 00
+T 55 00
+R 00 00 00 00
+T 55 00 21 03 08 CD 00 00 28 D8 3E 01 32 00 00
+R 00 00 00 00 02 06 04 00 02 0D 2B 00
+T 62 00
+R 00 00 00 00
+T 62 00 3E 00 32 00 00 CD 00 00 3A 00 00 CD
+R 00 00 00 00 02 05 43 00 02 08 42 00 02 0B 4B 00
+T 6E 00 00 00 CD 00 00 DD 21 00 00 CD
+R 00 00 00 00 02 02 0F 00 02 05 0C 00 02 09 3D 00
+T 78 00 00 00 CD 00 00
+R 00 00 00 00 02 02 09 00 02 05 1C 00
+T 7D 00
+R 00 00 00 00
+T 7D 00 3A 00 00 FE 01 CA 62 00 CD 00 00 DD 21
+R 00 00 00 00 02 03 43 00 00 08 00 00 02 0B 54 00
+T 8A 00 00 00 DD 7E 0A FE 00 C2 A0 00 CD 00 00 3E
+R 00 00 00 00 02 02 3D 00 00 0A 00 00 02 0D 3A 00
+T 98 00 FF
+R 00 00 00 00
+T 99 00
+R 00 00 00 00
+T 99 00 3D C2 99 00 C3 21 00
+R 00 00 00 00 00 04 00 00 00 07 00 00
+T A0 00
+R 00 00 00 00
+T A0 00 DD 21 00 00 CD 00 00 CD 00 00 CD
+R 00 00 00 00 02 04 3D 00 02 07 09 00 02 0A 02 00
+T AB 00 00 00 CD 00 00 CD 00 00 3A
+R 00 00 00 00 02 02 3E 00 02 05 41 00 02 08 09 00
+T B4 00 00 00 FE FF CA C5 00 DD 21 00 00 CD
+R 00 00 00 00 02 02 15 00 00 07 00 00 02 0B 4C 00
+T C0 00 00 00 CD 00 00
+R 00 00 00 00 02 02 4A 00 02 05 34 00
+T C5 00
+R 00 00 00 00
+T C5 00 CD 00 00 CD 00 00 18 B0
+R 00 00 00 00 02 03 2E 00 02 06 47 00

@@ -19,7 +19,7 @@ dibujar:
 ;;
 ;; Pequenya espera
 ;;
- ld b, 16 		;; Conta para 16 halts (10hex = 16dec)
+ ld b, 16 		;; Conta para 16 halts (10hex = 16dec)
  esperar:
    halt		;; Espera ~1/300 segundos
    dec b		;; Un halt menos a terminar

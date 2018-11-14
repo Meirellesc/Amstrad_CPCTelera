@@ -1,0 +1,78 @@
+asignación de trabajo
+---------------------
+
+HECHO - dibujar y pintar la portada, más la pantalla de carga
+HECHO - generar los decorados
+HECHO - ubicar los jugadores, el balón, las canastas y las animadoras
+HECHO - escribir la lógica necesaria para mover los jugadores por el campo
+- permitir coger el balón
+- permitir pasar el balón
+- permitir robar el balón
+- permitir hacer mates
+- permitir lanzar el balón
+- permitir ganar y perder partidas
+- escribir la lógica de las animadoras
+- crear la IA
+- definir comportamientos distintos para cada equipo rival
+- dibujar algún sprite especial para los más raros
+- ¡batería de ensayos!
+- pruebas y retoques finales
+- ¡¡ENTREGAR ANTES DE LAS DOCE MENOS CUARTO DE LA NOCHE!!
+
+---
+
+	ataque	defensa
+
+	ir a la	ir a por
+primero	canasta	el balon
+	enemiga	normal-
+	---	mente en
+	si esta	manos de
+	bajo la	primer
+	canasta	enemigo
+	machaca
+	---
+	si no
+	puede
+	ir a la
+	canasta
+	lanza
+
+	estorba	estorba
+segundo	al prim	al secun
+	enemigo	enemigo
+
+---
+
+el jugador...
+	¿tiene la pelota o no?
+		BIT 0
+	¿está de pie o saltando?
+		se comprueba mirando POSZ y VELZ
+	¿es humano o IA?
+		BIT 1
+	¿es el primario o el secundario?
+		BIT 2, que se establece externamente si BIT 0 FALSO
+	¿a qué equipo pertenece?
+		se comprueba mirando XL, o bien B (colores de equipo)
+	¿está pasando la pelota?
+		BIT 3 + BIT 2 VERDADERO
+	¿está recibiendo la pelota?
+		BIT 3 + BIT 2 FALSO
+
+el balon...
+	¿esta en movimiento o en manos de un jugador?
+		BIT 0
+	si se mueve, ¿está libre o debe alcanzar un objetivo?
+		BIT 1
+	si es un lanzamiento, ¿acertará o fracasará?
+		BIT 2
+	si es un lanzamiento, ¿es de dos o tres puntos?
+		BIT 3
+----
+
+
+
+quien tiene la bola	amigo	nadie	enemigo
+que hace el primero	ataque	bola	bola
+que hace el segundo	ataque	defensa	defensa
